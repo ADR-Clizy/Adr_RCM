@@ -1,0 +1,21 @@
+@*
+*
+* (c) 2021-2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*@
+
+@page "/CardManagment/CardCode"
+
+<AuthorizeView>
+    <Authorized>
+        <p>Hello @context.User.Identity.Name</p>
+        <img width="500rem" src="@String.Format("data:image/png;base64,{0}", Convert.ToBase64String(QRCodeManager.GenerateQRCode("google.com",10)))" />
+
+        <a class="form-control btn btn-andromede" href="Models/Download">Download</a>
+    </Authorized>
+    <NotAuthorized>
+        <p>No Hello</p>
+    </NotAuthorized>
+</AuthorizeView>
+@*Create a method in SqlConnection that retrieve the SIRET Number*@

@@ -1,0 +1,113 @@
+@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
+@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
+@inherits OwningComponentBase
+
+@page "/RestorerManagment/Login"
+
+<div class="top-row px-2 centered-title ">
+    <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
+    <h3>Veuillez vous connecter pour accéder aux services Andromede</h3>
+    <EditForm Model="@_restorer" OnValidSubmit="@RestorerConnection" id="connexion-form">
+        <div class="form-row connexion-div">
+            <div class="form-group col-10">
+                <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
+                <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
+            </div>
+        </div>
+        <div class="form-row connexion-div">
+            <div class="form-group col-10">
+                <label for="userPassword"><span class="oi oi-key form-icon"></span>Mot de passe</label>
+                <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
+            </div>
+            <div class="form-group col-2">
+                <img id="password-eye-connexion" src="img/ico/password_eye.png" @onclick="ShowPassword" />
+            </div>
+
+        </div>
+        <div class="form-row connexion-div">
+            <div class="form-group col-10">
+                <button type="submit" class="btn btn-andromede connexion-div">Se connecter</button>
+                <p id="errorOccurred" class="form-alert form-text">@_errorOccurred</p>
+                @if(_isLoading)
+                {
+                    <div class="spinner-border text-andromede" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </EditForm>
+</div>
+<div>
+    <a href="#" class="subform-connexion-link">Mot de passe oublié ?</a>
+</div>
+<div>
+    <a href="RestorerManagment/Registration" class="subform-connexion-link">Pas encore inscrit ?</a>
+</div>
+
+@code {
+
+    private string _errorOccurred;
+    private string _inputType;
+    private bool _isLoading;
+
+    private Restorer _restorer;
+    private Restorer _storedRestorer;
+
+    public IRestorerRepository _restorerRepository { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _errorOccurred = "";
+        _inputType = "password";
+        _isLoading = false;
+        _restorer = new Restorer();
+        _storedRestorer = new Restorer();
+    }
+
+    private async void RestorerConnection()
+    {
+        _isLoading = true;
+        _storedRestorer = _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress);
+        if (isRestorerExisting() && isPasswordCorrect())
+        {
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.Id);
+            await _sessionStorage.SetItemAsync("sId", _storedRestorer.Id);
+            await _sessionStorage.SetItemAsync("sEmailAddress", _storedRestorer.EmailAddress);
+            NavManager.NavigateTo("/");
+        }
+        else
+        {
+            _errorOccurred = "L'adresse mail ou le mot de passe est incorrect";
+        }
+        _isLoading = false;
+    }
+
+    private bool isRestorerExisting()
+    {
+        return _storedRestorer != null;
+    }
+
+    private bool isPasswordCorrect()
+    {
+        return BCryptNet.Verify(_restorer.Password, _storedRestorer.Password);
+    }
+
+
+    void ShowPassword()
+    {
+        if (_inputType == "password")
+            _inputType = "text";
+        else
+            _inputType = "password";
+    }
+}

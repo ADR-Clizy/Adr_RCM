@@ -1,0 +1,112 @@
+﻿@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+@using DatabaseConnection;
+@using Microsoft.Extensions.DependencyInjection;
+@using System.Security.Claims;
+@using Andromede.Authentication;
+@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
+@inherits OwningComponentBase
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Andromede</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Accueil
+            </NavLink>
+        </li>
+        <AuthorizeView>
+            <Authorized Context="_authContext">
+                <li style="color:white" class="nav-item px-3">
+                    <NavLink class="nav-link" href="RestorerManagment/Profile">
+                        <span class="oi oi-person" aria-hidden="true"></span>Profil
+                    </NavLink>
+                </li>
+                @if (isRestorerSubscribed(_authContext.User.Identity.Name))
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="CardManagment/CardCode">
+                            <span class="oi oi-data-transfer-download" aria-hidden="true"></span>QRCodes
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="CardManagment/UploadCard">
+                            <span class="oi oi-data-transfer-upload" aria-hidden="true"></span>Ajoutez votre carte
+                        </NavLink>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="RestorerManagment/Subscription">
+                            <span class="oi oi-grid-two-up" aria-hidden="true"></span>Souscrire
+                        </NavLink>
+                    </li>
+                }
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link log-out-link" @onclick="RestorerLoggedOut">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span>Déconnexion
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="RestorerManagment/Login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Connexion
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="RestorerManagment/Registration">
+                        <span class="oi oi-check" aria-hidden="true"></span> Inscription
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    public IRestorerRepository _restorerRepository { get; set; }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+    }
+
+    private bool isRestorerSubscribed(string iId)
+    {
+        if (iId != null)
+        {
+            return _restorerRepository.GetRestorerWithId(int.Parse(iId)).Subscribed;
+        }
+        return false;
+    }
+
+    private void RestorerLoggedOut()
+    {
+        ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsLoggedOut();
+        NavManager.NavigateTo("/");
+    }
+}

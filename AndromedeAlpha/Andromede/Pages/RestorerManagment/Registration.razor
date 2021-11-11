@@ -1,0 +1,209 @@
+@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@inject NavigationManager NavManager
+@inherits OwningComponentBase
+
+@page "/RestorerManagment/Registration"
+
+<img class="x-small" src="img/andromede_white_bg.png" />
+<div class="top-row centered-title ">
+    <h3>Bienvenue !</h3>
+    <h5>Veuillez remplir le formulaire ci-dessous afin de vous inscrire aux services Andromede</h5>
+    <h6><span class="oi oi-warning form-icon"></span>Une souscription à Andromede Alpha est nécessaire afin de pouvoir accéder à la numérisation des cartes</h6>
+    <EditForm Model="@_restorer" OnValidSubmit="@RestorerRegistration" id="registration-form">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="form-group col-10">
+                <label for="userSiretNumber">
+                    <span class="oi oi-list form-icon"></span>
+                    Numéro de SIRET
+                </label>
+                <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_restorer.RestaurantSiretNumber" />
+                <ValidationMessage For="@(() => _restorer.RestaurantSiretNumber)" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-5">
+                <label for="restaurantName">
+                    <img class="form-img" src="img/ico/fork_spoon.png" />
+                    Nom du restaurant
+                </label>
+                <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_restorer.RestaurantName" />
+                <ValidationMessage For="@(() => _restorer.RestaurantName)" />
+            </div>
+            <div class="form-group col-5">
+                <label for="restaurantState">
+                    <img class="form-img" src="img/ico/fork_knife_loc.png" />
+                    Pays du restaurant
+                </label>
+                <InputSelect id="restaurantState" class="form-control" @bind-Value="_restorer.RestaurantState">
+                    <option>France</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => _restorer.RestaurantState)" />
+            </div>
+        </div>
+        <div class="horizontal-division"></div>
+        <div class="form-row">
+            <div class="form-group col-5">
+                <label for="userFirstName">
+                    <span class="oi oi-person form-icon"></span>
+                    Prénom
+                </label>
+                <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_restorer.FirstName" />
+                <ValidationMessage For="@(() => _restorer.FirstName)" />
+            </div>
+            <div class="form-group col-5">
+                <label for="userLastName">
+                    <span class="oi oi-person form-icon"></span>
+                    Nom de famille
+                </label>
+                <InputText type="text" class="form-control" id="userLastName" @bind-Value="_restorer.LastName" />
+                <ValidationMessage For="@(() => _restorer.LastName)" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-5">
+                <label for="userEmail">
+                    <img class="form-img" src="img/ico/mail.png">
+                    Addresse mail
+                </label>
+                <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
+                <ValidationMessage For="@(() => _restorer.EmailAddress)" />
+            </div>
+            <div class="form-group col-5">
+                <label for="userPhoneNumber">
+                    <span class="oi oi-phone form-icon"></span>
+                    Numéro de téléphone
+                </label>
+                <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_restorer.PhoneNumber" />
+                <ValidationMessage For="@(() => _restorer.PhoneNumber)" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-5">
+                <label for="userPassword">
+                    <span class="oi oi-key form-icon"></span>
+                    Mot de passe
+                </label>
+                <InputText type="@InputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
+                <ValidationMessage For="@(() => _restorer.Password)" />
+            </div>
+            <div class="form-group col-5">
+                <label for="confirmedUserPassword">
+                    <span class="oi oi-key form-icon"></span>
+                    Confirmer le mot de passe
+                </label>
+                <div>
+                    <InputText type="@InputType" class="form-control" id="confirmedUserPassword" @bind-Value="_confirmedPassword" />
+                    <ValidationMessage For="@(() => _restorer.Password)" />
+                    <small id="missMatchedPasswords" class="form-alert form-text">@_missMatchedPasswords</small>
+                </div>
+            </div>
+            <div class="form-group col-2">
+                <img id="password-eye-registration" src="img/ico/password_eye.png" @onclick="ShowPassword" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-10">
+                <button type="submit" class="btn btn-andromede">S'inscrire</button>
+                <p id="existingAccount" class="form-alert form-text">@_existingAccount</p>
+                @if(_isLoading)
+                {
+                <div class="spinner-border text-andromede" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                }
+            </div>
+        </div>
+    </EditForm>
+</div>
+<div>
+    <a href="RestorerManagment/Login" class="subform-registration-link">Déjà inscrit ?</a>
+</div>
+
+
+@code {
+    private string _confirmedPassword;
+    private string _missMatchedPasswords;
+    private string _existingAccount;
+    private string _hashedPassword;
+    private bool _isLoading;
+
+    private Restorer _restorer = new Restorer();
+    private Restorer _restorerDataToStore = new Restorer();
+
+    public IRestorerRepository _restorerRepository { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _restorer.RestaurantState = "France";
+        //Remove this as soon as Andromede become International (:p)
+        _confirmedPassword = "";
+        _missMatchedPasswords = "";
+        _existingAccount = "";
+        _hashedPassword = "";
+        _isLoading = false;
+    }
+
+    private void RestorerRegistration()
+    {
+        _isLoading = true;
+        _missMatchedPasswords = "";
+        _existingAccount      = "";
+        if (_confirmedPassword.Length == 0)
+        {
+            _missMatchedPasswords = "Veuillez confirmer votre mot de passe";
+        }
+        else if (IsEmailAdressExisting())
+        {
+            _existingAccount = "Un compte avec cette adresse mail existe déjà";
+        }
+        else if (IsRestaurantSiretNumberExisting())
+        {
+            _existingAccount = "Un compte avec ce numéro de Siret existe déjà";
+        }
+        else if (!IsPasswordConfirmed())
+        {
+            _missMatchedPasswords = "Les mots de passe ne correspondent pas";
+        }
+        else
+        {
+            _restorer.Password = _hashedPassword;
+            _restorerRepository.NewRestorer(_restorer);
+            //Start the Session
+            NavManager.NavigateTo("/Restoration/UploadCard");
+        }
+        _isLoading = false;
+    }
+
+    private bool IsPasswordConfirmed()
+    {
+        _hashedPassword = BCryptNet.HashPassword(_restorer.Password);
+        return BCryptNet.Verify(_confirmedPassword, _hashedPassword);
+    }
+
+    private bool IsEmailAdressExisting()
+    {
+        return _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress) != null;
+    }
+
+    private bool IsRestaurantSiretNumberExisting()
+    {
+        return _restorerRepository.GetRestorerWithRestaurantSiretNumber(_restorer.RestaurantSiretNumber) != null;
+    }
+
+    private string InputType = "password";
+    private void ShowPassword()
+    {
+        if (InputType == "password")
+            InputType = "text";
+        else
+            InputType = "password";
+    }
+}

@@ -1,0 +1,35 @@
+﻿@*
+*
+* (c) 2021-2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*@
+
+@page "/"
+@namespace Andromede.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Andromede Digital</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="Andromede.styles.css" rel="stylesheet" />
+</head>
+<body>
+
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.Server))
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="_content/BlazorInputFile/inputfile.js"></script>
+</body>
+</html>
