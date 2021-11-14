@@ -39,7 +39,8 @@ public class DownloadModel : PageModel
     public byte[] GenerateNormalQRCodePdf()
     {
         //string aUserCardLink = getUserCardLink(User.Identity.Name);
-        string aUserCardLink = $"localhost:5001/Cards/{@RouteData.Values["RestorerId"]}.pdf";
+        //string aUserCardLink = $"localhost:5001/Cards/{@RouteData.Values["RestorerId"]}.pdf";
+        string aUserCardLink = $"localhost:5001/Cards/11111111111111.pdf";
         //Include the siret number of the authenticated restorer
         int anInitialHeight = 75;
         int aMaximalHeight = 750;

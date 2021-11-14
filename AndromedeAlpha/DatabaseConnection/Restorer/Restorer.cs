@@ -62,5 +62,7 @@ namespace DatabaseConnection
         public bool Subscribed { get; set; } = false;
 
         public DateTime DateOfSubscription { get; set; }
+
+        public List<Card> Cards { get; set; }
     }
 }

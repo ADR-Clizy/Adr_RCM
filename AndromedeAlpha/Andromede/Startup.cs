@@ -32,7 +32,6 @@ namespace Andromede
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<AndromedeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RestorerConnection")));
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredSessionStorage();

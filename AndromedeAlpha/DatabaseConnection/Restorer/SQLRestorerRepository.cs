@@ -65,5 +65,10 @@ namespace DatabaseConnection
         {
             return _context.Restorers.Find(iId).Subscribed;
         }
+
+        public List<Card> GetCards(int iId)
+        {
+            return _context.Restorers.Find(iId).Cards;
+        }
     }
 }

@@ -5,13 +5,7 @@
     <NotFound>
         <CascadingAuthenticationState>
             <LayoutView Layout="@typeof(MainLayout)">
-                <img class="small" src="img/andromede_white_bg.png" />
-                <div class="top-row centered-title ">
-                    <h1 class="bottom-divider">Erreur 404</h1>
-                    <p class="bottom-divider">Désolé il n'y a rien à cette adresse</p>
-                    <a href="login" class="btn btn-andromede bottom-divider">Connexion</a>
-                    <a href="registration" class="btn btn-andromede">Inscription</a>
-                </div>
+                <Andromede.Pages.NotAuthorizedViewer />
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>
