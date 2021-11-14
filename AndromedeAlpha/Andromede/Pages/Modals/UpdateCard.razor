@@ -1,0 +1,187 @@
+﻿@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+@inject IJSRuntime jsRuntime
+@inject NavigationManager NavManager
+@inherits OwningComponentBase
+
+<AuthorizeView>
+    <Authorized Context="_authContext">
+        @if (GetAuthRestorer(_authContext.User.Identity.Name) != null)
+        {
+            <div class="top-row px-2 centered-title">
+                <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
+                <h5>Vous pouvez sélectionner une nouvelle carte, ou modifier son nom</h5>
+                <h5 class="bottom-divider">Format accepté :</h5>
+                <img class="small centered-image" src="img/ico/pdf.png" />
+            </div>
+            <EditForm Model="@_currentRestorerCard" OnValidSubmit="@CardAdded">
+                <div class="form-row connexion-div top-divider">
+                    <div class="form-group col-sm-2"></div>
+                    <div class="form-group col-sm-8">
+                        <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
+                        <InputText type="text" class="form-control" id="cardName" @bind-Value="_currentRestorerCard.CardName" />
+                    </div>
+                    <div class="form-group col-sm-2"></div>
+                </div>
+                <div class="drag-drop-zone">
+                    <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf,application/vnd.ms-excel" />
+                    Glissez un fichier ou cliquez pour déposer une fichier
+                </div>
+
+                <div class="centered-title top-divider bottom-divider">
+                    <h6>@_fileInfos</h6>
+                    <button type="submit" class="btn btn-andromede top-divider">Valider les modifications</button>
+                    @if (_isLoading)
+                    {
+                        <div class="spinner-border text-andromede" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <Andromede.Pages.NotAuthorizedViewer />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    private const int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    private const int MAX_FILE_SIZE_MB = 10;
+
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter] public int Id { get; set; }
+
+    private string _fileInfos;
+
+    private bool _isFileCorrect;
+    private bool _isCardInfoCorrect;
+    private bool _isLoading;
+
+    private IFileListEntry _fileToUpload;
+
+    private Restorer _authRestorer;
+    private Card _currentRestorerCard;
+
+    private List<string> acceptedFileTypes;
+
+    public IRestorerRepository _restorerRepository { get; set; }
+    public ICardRepository _cardRepository { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
+        acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
+        _isLoading = false;
+        _currentRestorerCard = _cardRepository.GetCardWithId(Id);
+        _fileInfos = "Pas de nouvelle carte ajoutée pour le moment. Veuillez cliquer ou glisser un fichier sur la zone ci-dessus";
+    }
+
+    private Restorer GetAuthRestorer(string iId)
+    {
+        _authRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
+        return _authRestorer;
+    }
+
+    private void ViewFileAndCardName(IFileListEntry[] files)
+    {
+        _isLoading = true;
+        _fileToUpload = files.FirstOrDefault();
+        if (_fileToUpload == null)
+        {
+            return;
+        }
+        else if (_fileToUpload.Size > MAX_FILE_SIZE)
+        {
+            _fileInfos = $"Le fichier est trop gros. La taille maximale est : {MAX_FILE_SIZE_MB} MB.";
+            _isFileCorrect = false;
+        }
+        else if (!acceptedFileTypes.Contains(_fileToUpload.Type))
+        {
+            _fileInfos = "Seuls les fichiers de type PDF sont acceptés";
+            _isFileCorrect = false;
+        }
+        else
+        {
+            _fileInfos = $"Nouvelle carte : {_fileToUpload.Name}";
+            _isFileCorrect = true;
+        }
+
+        if (_currentRestorerCard.CardName.Length == 0 || _currentRestorerCard.CardName.Length >= 40)
+        {
+            _isCardInfoCorrect = false;
+        }
+        else
+        {
+            _isCardInfoCorrect = true;
+        }
+        _isLoading = false;
+    }
+
+    private async Task CardAdded()
+    {
+        _isLoading = true;
+        _isFileCorrect = false;
+        _isCardInfoCorrect = false;
+        string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
+        try
+        {
+            _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
+            if(_fileToUpload.Data != null)
+            {
+                using Stream aFileToUploadStream = _fileToUpload.Data;
+                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
+                using FileStream aFileStream = File.Create(aFileToUploadPath);
+                await aFileToUploadStream.CopyToAsync(aFileStream);
+            }
+        }
+        catch (Exception e)
+        {
+            _fileInfos = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
+        }
+        _isLoading = false;
+        _fileInfos = "La carte a été correctement modifiée";
+        NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+    }
+}
+
+
+<style>
+    .drag-drop-zone {
+        border: 3px dashed #511621;
+        border-radius: 1rem;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #eee;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+        color: #aeaeae;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin: 5% 15% 0 15%;
+        position: relative;
+    }
+
+        .drag-drop-zone:hover {
+            background-color: #f5f5f5;
+        }
+
+        .drag-drop-zone input[type=file] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+</style>

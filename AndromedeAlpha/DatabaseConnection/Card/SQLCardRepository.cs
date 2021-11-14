@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DatabaseConnection
 {
-    class SQLCardRepository : ICardRepository
+    public class SQLCardRepository : ICardRepository
     {
         private readonly AndromedeDbContext _context;
 

@@ -6,6 +6,7 @@
 */
 
 using Andromede.Authentication;
+using Blazored.Modal;
 using Blazored.SessionStorage;
 using DatabaseConnection;
 using Microsoft.AspNetCore.Builder;
@@ -35,8 +36,10 @@ namespace Andromede
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredSessionStorage();
+            services.AddBlazoredModal();
             services.AddScoped<AuthenticationStateProvider, AndromedeAuthenticationStateProvider>();
             services.AddScoped<IRestorerRepository, SQLRestorerRepository>();
+            services.AddScoped<ICardRepository, SQLCardRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

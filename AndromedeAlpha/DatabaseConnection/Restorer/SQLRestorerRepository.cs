@@ -68,7 +68,7 @@ namespace DatabaseConnection
 
         public List<Card> GetCards(int iId)
         {
-            return _context.Restorers.Find(iId).Cards;
+            return _context.Cards.Where(aCard => iId == aCard.RestorerId).ToList();
         }
     }
 }

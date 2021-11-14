@@ -1,0 +1,45 @@
+﻿@inject IJSRuntime jsRuntime
+@inject NavigationManager NavManager
+@inherits OwningComponentBase
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-5">
+        <button class="btn btn-andromede" @onclick="DeleteCurrentCard">Confirmer</button>
+    </div>
+    <div class="col-3">
+        <button class="btn btn-andromede" @onclick="CloseDeleteCardModal">Annuler</button>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter] public int Id { get; set; }
+
+    private Card _currentCard;
+
+    public ICardRepository _cardRepository { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
+        _currentCard = _cardRepository.GetCardWithId(Id);
+    }
+
+    async Task DeleteCurrentCard()
+    {
+        _cardRepository.DeleteCard(Id);
+        NavManager.NavigateTo(NavManager.Uri, forceLoad:true);
+        await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_currentCard));
+    }
+
+    async Task CloseDeleteCardModal()
+    {
+        await ModalInstance.CancelAsync();
+    }
+}

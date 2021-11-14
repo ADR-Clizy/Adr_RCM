@@ -5,7 +5,9 @@
     *
 *@
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
+@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
 @inherits OwningComponentBase
 
 @page "/RestorerManagment/Registration"
@@ -112,11 +114,11 @@
             <div class="form-group col-10">
                 <button type="submit" class="btn btn-andromede">S'inscrire</button>
                 <p id="existingAccount" class="form-alert form-text">@_existingAccount</p>
-                @if(_isLoading)
+                @if (_isLoading)
                 {
-                <div class="spinner-border text-andromede" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+                    <div class="spinner-border text-andromede" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 }
             </div>
         </div>
@@ -151,11 +153,11 @@
         _isLoading = false;
     }
 
-    private void RestorerRegistration()
+    private async Task RestorerRegistration()
     {
         _isLoading = true;
         _missMatchedPasswords = "";
-        _existingAccount      = "";
+        _existingAccount = "";
         if (_confirmedPassword.Length == 0)
         {
             _missMatchedPasswords = "Veuillez confirmer votre mot de passe";
@@ -175,7 +177,10 @@
         else
         {
             _restorer.Password = _hashedPassword;
-            _restorerRepository.NewRestorer(_restorer);
+            _restorer = _restorerRepository.NewRestorer(_restorer);
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorer.Id);
+            await _sessionStorage.SetItemAsync("sId", _restorer.Id);
+            await _sessionStorage.SetItemAsync("sEmailAddress", _restorer.EmailAddress);
             //Start the Session
             NavManager.NavigateTo("/Restoration/UploadCard");
         }

@@ -1,0 +1,124 @@
+﻿@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@page "/CardManagment/Restorer/Cards/{id:int}"
+@inject NavigationManager NavManager
+@inject IModalService Modal
+@inherits OwningComponentBase
+@using Andromede.Pages.Modals
+
+<AuthorizeView>
+    <Authorized Context="_authContext">
+        @if (GetCurrentRestorer() != null && Id == int.Parse(_authContext.User.Identity.Name))
+        {
+        <div class="top-row centered-title">
+
+            <h1>@_currentRestorer.RestaurantName</h1>
+            <h3>Bienvenue dans la gestion des cartes</h3>
+            <p>Vous pouvez ici ajouter, modifier ou supprimer une carte.</p>
+            <div class="col-sm-2">
+                <img src="img/ico/add_card.png" class="add-card-button" @onclick="@(() => Modal.Show<UploadCard>("Upload a card"))"/>
+            </div>
+            @if(!_restorerRepository.GetCards(_currentRestorer.Id).Any())
+             { 
+                <h3 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h3>
+                <h4>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" width="55" height="45"/> afin d'ajouter votre première carte</h4>
+             }
+            @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.Id))
+            {
+                <div class="row top-divider">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div class="horizontal-division top-divider"></div>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+                <div class="row top-divider">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <h3><strong>@aCard.CardName</strong></h3>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <object data=@($"https://localhost:5001/Customer/Cards/{aCard.Id}.pdf") width=420 height=600 type='application/pdf' />
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="row ">
+                    <div class="col-sm-5"></div>
+                    <div class="col-sm-1">
+                        <span @onclick="@(() => UpdateCurrentCard(aCard.Id, aCard.CardName))" style="font-size: 200%" class="oi oi-pencil form-icon"></span>
+                    </div>
+                    <div class="col-sm-1">
+                        <span @onclick="@(() => DeleteCurrentCard(aCard.Id, aCard.CardName))" style="font-size: 200%" class="oi oi-trash form-icon"></span>
+                    </div>
+                    <div class="col-sm-5"></div>
+                </div>
+
+            }
+
+
+        </div>
+        }
+        else
+        {
+            <Andromede.Pages.NotAuthorizedViewer />
+        }
+    </Authorized>
+    <NotAuthorized>
+        <Andromede.Pages.NotAuthorizedViewer />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code
+{
+    [Parameter]
+    public int Id { get; set; }
+
+    private Restorer _currentRestorer;
+    private List<Card> _cards;
+    private IRestorerRepository _restorerRepository;
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+    }
+
+    public Restorer GetCurrentRestorer()
+    {
+        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
+        return _currentRestorer;
+    }
+
+    public void DeleteCurrentCard(int iCardId, string iCardName)
+    {
+        var aParameters = new ModalParameters();
+        aParameters.Add(nameof(Card.Id), iCardId);
+        var aOptions = new ModalOptions()
+        {
+            HideCloseButton = true,
+            Animation = ModalAnimation.FadeInOut(0.5)
+        };
+        Modal.Show<DeleteCard>($"Supprimer : {iCardName}", aParameters, aOptions);
+    }
+
+    public void UpdateCurrentCard(int iCardId, string iCardName)
+    {
+        var aParameters = new ModalParameters();
+        aParameters.Add(nameof(Card.Id), iCardId);
+        var aOptions = new ModalOptions()
+        {
+            Animation = ModalAnimation.FadeInOut(0.5)
+        };
+        Modal.Show<UpdateCard>($"Modifier : {iCardName}", aParameters, aOptions);
+    }
+}
+

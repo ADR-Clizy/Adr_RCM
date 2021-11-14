@@ -12,8 +12,6 @@ namespace DatabaseConnection
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Champ requis")]
-        [RegularExpression(@"^[a-zA-Zéèçëïêîèìœ\s]+$",
-         ErrorMessage = "Chiffres / Caractères spéciaux interdits")]
         [MaxLength(40, ErrorMessage = "Champ trop long")]
         public string CardName { get; set; }
 

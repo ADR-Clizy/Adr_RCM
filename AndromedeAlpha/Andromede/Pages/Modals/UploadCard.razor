@@ -4,7 +4,6 @@
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
-@page "/CardManagment/UploadCard"
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
 @inherits OwningComponentBase
@@ -15,29 +14,39 @@
         {
             <div class="top-row px-2 centered-title">
                 <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
-                <h5>Veuillez nous envoyer votre carte afin de générer la numérisation</h5>
+                <h5>Veuillez sélectionner une carte afin de générer la numérisation</h5>
                 <h5 class="bottom-divider">Format accepté :</h5>
                 <img class="small centered-image" src="img/ico/pdf.png" />
             </div>
-
-            <div class="drag-drop-zone">
-                <BlazorInputFile.InputFile OnChange="ViewFile" accept="application/pdf,application/vnd.ms-excel" />
-                Glissez un fichier ou cliquez pour déposer une fichier
-            </div>
-
-            <div class="centered-title top-divider bottom-divider">
-                <h6>@_infos</h6>
-                @if (_isFileCorrect)
-                {
-                    <button class="btn btn-andromede top-divider" @onclick="CardUploaded">Valider l'envoi du fichier</button>
-                }
-                @if (_isLoading)
-                {
-                    <div class="spinner-border text-andromede" role="status">
-                        <span class="sr-only">Loading...</span>
+            <EditForm Model="@_currentRestorerCard" OnValidSubmit="@CardAdded">
+                <div class="form-row connexion-div top-divider">
+                    <div class="form-group col-sm-2"></div>
+                    <div class="form-group col-sm-8">
+                        <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
+                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_currentRestorerCard.CardName" />
                     </div>
-                }
-            </div>
+                    <div class="form-group col-sm-2"></div>
+                </div>
+                <div class="drag-drop-zone">
+                    <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf,application/vnd.ms-excel" />
+                    Glissez un fichier ou cliquez pour déposer une fichier
+                </div>
+
+                <div class="centered-title top-divider bottom-divider">
+                    <h6>@_fileInfos</h6>
+                    @if (_isFileCorrect)
+                    {
+                        <button type="submit" class="btn btn-andromede top-divider">Ajouter la carte</button>
+                    }
+                    @if (_isLoading)
+                    {
+                        <div class="spinner-border text-andromede" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                
+            </EditForm>
         }
     </Authorized>
     <NotAuthorized>
@@ -50,7 +59,7 @@
     private const int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private const int MAX_FILE_SIZE_MB = 10;
 
-    private string _infos;
+    private string _fileInfos;
 
     private bool _isFileCorrect;
     private bool _isLoading;
@@ -58,18 +67,20 @@
     private IFileListEntry _fileToUpload;
 
     private Restorer _authRestorer;
+    private Card _currentRestorerCard;
 
     private List<string> acceptedFileTypes;
 
-
-
-    private IRestorerRepository _restorerRepository;
+    public IRestorerRepository _restorerRepository { get; set; }
+    public ICardRepository _cardRepository { get; set; }
 
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
         acceptedFileTypes   = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
         _isLoading = false;
+        _currentRestorerCard = new Card();
     }
 
     private Restorer GetAuthRestorer(string iId)
@@ -78,9 +89,10 @@
         return _authRestorer;
     }
 
-    private void ViewFile(IFileListEntry[] files)
+    private void ViewFileAndCardName(IFileListEntry[] files)
     {
         _isLoading = true;
+        _fileInfos = "";
         _fileToUpload = files.FirstOrDefault();
         if (_fileToUpload == null)
         {
@@ -88,41 +100,47 @@
         }
         else if (_fileToUpload.Size > MAX_FILE_SIZE)
         {
-            _infos = $"Le fichier est trop gros. La taille maximale est : {MAX_FILE_SIZE_MB} MB.";
+            _fileInfos = $"Le fichier est trop gros. La taille maximale est : {MAX_FILE_SIZE_MB} MB.";
             _isFileCorrect = false;
         }
         else if (!acceptedFileTypes.Contains(_fileToUpload.Type))
         {
-            _infos = "Seuls les fichiers de type PDF sont acceptés";
+            _fileInfos = "Seuls les fichiers de type PDF sont acceptés";
             _isFileCorrect = false;
         }
         else
         {
-            _infos = _fileToUpload.Name;
+            _fileInfos = _fileToUpload.Name;
             _isFileCorrect = true;
+        }
+
+        if(_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)
+        {
+            _currentRestorerCard.RestorerId = _authRestorer.Id;
         }
         _isLoading = false;
     }
 
-    private async Task CardUploaded()
+    private async Task CardAdded()
     {
         _isLoading = true;
         _isFileCorrect = false;
         string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
         try
         {
+            _currentRestorerCard = _cardRepository.NewCard(_currentRestorerCard);
             using Stream aFileToUploadStream = _fileToUpload.Data;
-            var aFileToUploadPath = $"wwwroot/Cards/{aRestaurantSiretNumber}.pdf";
+            var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
             using FileStream aFileStream = File.Create(aFileToUploadPath);
-
-            _infos = "Le fichier a été correctement ajouté au serveur Andromede.\nVous pouvez désormais télécharger vos QR Codes";
             await aFileToUploadStream.CopyToAsync(aFileStream);
         }
         catch (Exception e)
         {
-            _infos = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
+            _fileInfos = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
         }
         _isLoading = false;
+        _fileInfos = "La carte a été correctement ajouté au serveur Andromede.\n";
+        NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
     }
 }
 
