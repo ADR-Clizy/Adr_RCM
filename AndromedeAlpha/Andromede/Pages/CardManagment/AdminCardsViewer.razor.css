@@ -1,0 +1,54 @@
+﻿.pdf-card-viewer {
+    width: 420px;
+    height: 600px;
+}
+
+.add-card-image {
+    width: 90px;
+}
+
+    .add-card-image:hover {
+        cursor: pointer;
+    }
+
+.card-management-button {
+    font-size: 350%;
+}
+
+    .card-management-button:hover {
+        cursor: pointer;
+    }
+
+@media (max-width: 641px) {
+    .card-management-button {
+        font-size: 200%;
+    }
+
+    .add-card-image {
+        width: 50px;
+    }
+
+    .pdf-card-viewer {
+        width: 210px;
+        height: 300px;
+    }
+
+    .to-hide-for-mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 350px) {
+    .pdf-card-viewer {
+        width: 175px;
+        height: 250px;
+    }
+
+    .add-card-image {
+        width: 40px;
+    }
+
+    .card-management-button {
+        font-size: 170%;
+    }
+}

@@ -153,16 +153,3 @@ a:checked, .btn-link:checked {
     color : red;
 }
 
-.add-card-button {
-    position: fixed;
-    top: 50px;
-    right:50px;
-    bottom: 10px;
-    height: 100px;
-    width: 120px;
-}
-
-.add-card-button:hover
-{
-    cursor:pointer;
-}

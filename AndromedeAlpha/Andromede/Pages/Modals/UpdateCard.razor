@@ -8,7 +8,7 @@
 @inject NavigationManager NavManager
 @inherits OwningComponentBase
 
-<AuthorizeView>
+@*<AuthorizeView>
     <Authorized Context="_authContext">
         @if (GetAuthRestorer(_authContext.User.Identity.Name) != null)
         {
@@ -49,6 +49,59 @@
     <NotAuthorized>
         <Andromede.Pages.NotAuthorizedViewer />
     </NotAuthorized>
+</AuthorizeView>*@
+
+<AuthorizeView>
+    <Authorized Context="_authContext">
+        @if (GetAuthRestorer(_authContext.User.Identity.Name) != null)
+        {
+            <div class="top-row px-2 centered-title">
+                <img class="small centered-image bottom-divider to-hide-for-mobile" src="img/andromede_white_bg.png" />
+                <h6 class="to-hide-for-mobile">Vous pouvez sélectionner une nouvelle carte, ou modifier son nom</h6>
+                <h6 class="bottom-divider">Format accepté</h6>
+                <img class="accepted-format-image centered-image" src="img/ico/pdf.png" />
+            </div>
+            <EditForm Model="@_currentRestorerCard" OnValidSubmit="@CardAdded">
+                <div class="form-row connexion-div">
+                    <div class="form-group col-sm-2"></div>
+                    <div class="form-group col-sm-8">
+                        <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
+                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_currentRestorerCard.CardName" />
+                        <p style="color:red" class="top-divider">@_cardInfos</p>
+                    </div>
+                    <div class="form-group col-sm-2"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-1"></div>
+                    <div class="form-group col-sm-10">
+                        <div class="drag-drop-zone">
+                            <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf,application/vnd.ms-excel" />
+                            Glissez un fichier ou cliquez pour déposer une fichier
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-1"></div>
+                </div>
+
+
+                <div class="centered-title bottom-divider">
+                    <p>@_fileInfos</p>
+                    <p style="color:red">@_fileError</p>
+                    <p style="color:green">@_fileValidation</p>
+                    <button type="submit" class="btn btn-andromede top-divider">Valider les modifications</button>
+                    @if (_isLoading)
+                    {
+                        <div class="spinner-border text-andromede" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <Andromede.Pages.NotAuthorizedViewer />
+    </NotAuthorized>
 </AuthorizeView>
 
 
@@ -61,6 +114,9 @@
     [Parameter] public int Id { get; set; }
 
     private string _fileInfos;
+    private string _fileValidation;
+    private string _fileError;
+    private string _cardInfos;
 
     private bool _isFileCorrect;
     private bool _isCardInfoCorrect;
@@ -83,7 +139,6 @@
         acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
         _isLoading = false;
         _currentRestorerCard = _cardRepository.GetCardWithId(Id);
-        _fileInfos = "Pas de nouvelle carte ajoutée pour le moment. Veuillez cliquer ou glisser un fichier sur la zone ci-dessus";
     }
 
     private Restorer GetAuthRestorer(string iId)
@@ -127,30 +182,64 @@
         _isLoading = false;
     }
 
+    //private async Task CardAdded()
+    //{
+    //    _isLoading = true;
+    //    _isFileCorrect = false;
+    //    _isCardInfoCorrect = false;
+    //    string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
+    //    try
+    //    {
+    //        _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
+    //        if(_fileToUpload.Data != null)
+    //        {
+    //            using Stream aFileToUploadStream = _fileToUpload.Data;
+    //            var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
+    //            using FileStream aFileStream = File.Create(aFileToUploadPath);
+    //            await aFileToUploadStream.CopyToAsync(aFileStream);
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        _fileInfos = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
+    //    }
+    //    _isLoading = false;
+    //    _fileInfos = "La carte a été correctement modifiée";
+    //    NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+    //}
+
     private async Task CardAdded()
     {
-        _isLoading = true;
-        _isFileCorrect = false;
-        _isCardInfoCorrect = false;
         string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
-        try
+        if (_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)
         {
-            _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
-            if(_fileToUpload.Data != null)
+            _isLoading = true;
+            _isFileCorrect = false;
+            _cardInfos = "";
+            try
             {
+                _fileInfos = "";
+                _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
                 var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
+            catch (Exception e)
+            {
+                _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
+            }
+            _fileValidation = "La carte a été correctement modifiée.\n";
+            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+            _isLoading = false;
         }
-        catch (Exception e)
+        else
         {
-            _fileInfos = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
+
+            _cardInfos = "Veuillez entrer un nom valide (moins de 40 caractères).\n";
         }
-        _isLoading = false;
-        _fileInfos = "La carte a été correctement modifiée";
-        NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+
+
     }
 }
 
@@ -167,9 +256,10 @@
         background-color: #eee;
         box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
         color: #aeaeae;
-        font-size: 1.5rem;
+        font-size: 1rem;
+        width: 100%;
+        height: 20px;
         cursor: pointer;
-        margin: 5% 15% 0 15%;
         position: relative;
     }
 

@@ -1,0 +1,8 @@
+﻿.accepted-format-image {
+    width:120px;
+}
+@media (max-width: 641px) {
+    .to-hide-for-mobile {
+        display:none;
+    }
+}

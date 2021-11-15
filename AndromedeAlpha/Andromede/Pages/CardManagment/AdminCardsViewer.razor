@@ -16,24 +16,22 @@
         @if (GetCurrentRestorer() != null && Id == int.Parse(_authContext.User.Identity.Name))
         {
         <div class="top-row centered-title">
-
-            <h1>@_currentRestorer.RestaurantName</h1>
-            <h3>Bienvenue dans la gestion des cartes</h3>
-            <p>Vous pouvez ici ajouter, modifier ou supprimer une carte.</p>
-            <div class="col-sm-2">
-                <img src="img/ico/add_card.png" class="add-card-button" @onclick="@(() => Modal.Show<UploadCard>("Upload a card"))"/>
-            </div>
-            @if(!_restorerRepository.GetCards(_currentRestorer.Id).Any())
-             { 
+            <img class="small centered-image" src="img/andromede_white_bg.png" />
+            <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
+            <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
+            <h5>Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
+            @if (!_restorerRepository.GetCards(_currentRestorer.Id).Any())
+            {
+                <img src="img/ico/add_card.png" class="add-card-button" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
                 <h3 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h3>
-                <h4>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" width="55" height="45"/> afin d'ajouter votre première carte</h4>
-             }
+                <h4>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" width="55" height="45" /> afin d'ajouter votre première carte</h4>
+            }
             @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.Id))
             {
-                <div class="row top-divider">
+                <div class="row">
                     <div class="col-2"></div>
                     <div class="col-8">
-                        <div class="horizontal-division top-divider"></div>
+                        <div class="horizontal-division"></div>
                     </div>
                     <div class="col-2"></div>
                 </div>
@@ -45,21 +43,22 @@
                     <div class="col-sm-4"></div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-4"></div>
-                    <div class="col-sm-4">
-                        <object data=@($"https://localhost:5001/Customer/Cards/{aCard.Id}.pdf") width=420 height=600 type='application/pdf' />
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <iframe src=@($"https://localhost:5001/Customer/Cards/{aCard.Id}.pdf") class="pdf-card-viewer" type='application/pdf' />
                     </div>
-                    <div class="col-sm-4"></div>
+                    <div class="col-2"></div>
                 </div>
-                <div class="row ">
-                    <div class="col-sm-5"></div>
-                    <div class="col-sm-1">
-                        <span @onclick="@(() => UpdateCurrentCard(aCard.Id, aCard.CardName))" style="font-size: 200%" class="oi oi-pencil form-icon"></span>
+                <div class="row bottom-divider">
+                    <div class="col-4">
+                        <span @onclick="@(() => UpdateCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
                     </div>
-                    <div class="col-sm-1">
-                        <span @onclick="@(() => DeleteCurrentCard(aCard.Id, aCard.CardName))" style="font-size: 200%" class="oi oi-trash form-icon"></span>
+                    <div class="col-4">
+                        <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Upload a card"))" />
                     </div>
-                    <div class="col-sm-5"></div>
+                    <div class="col-4">
+                        <span @onclick="@(() => DeleteCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-trash card-management-button"></span>
+                    </div>
                 </div>
 
             }
@@ -114,11 +113,7 @@
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.Id), iCardId);
-        var aOptions = new ModalOptions()
-        {
-            Animation = ModalAnimation.FadeInOut(0.5)
-        };
-        Modal.Show<UpdateCard>($"Modifier : {iCardName}", aParameters, aOptions);
+        Modal.Show<UpdateCard>($"Modifier : {iCardName}", aParameters);
     }
 }
 

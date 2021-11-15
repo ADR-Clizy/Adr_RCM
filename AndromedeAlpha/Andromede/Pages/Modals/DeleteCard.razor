@@ -22,6 +22,7 @@
     [Parameter] public int Id { get; set; }
 
     private Card _currentCard;
+    private string _filePath;
 
     public ICardRepository _cardRepository { get; set; }
 
@@ -29,11 +30,16 @@
     {
         _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
         _currentCard = _cardRepository.GetCardWithId(Id);
+        _filePath = $"wwwroot/Customer/Cards/{Id}.pdf";
     }
 
     async Task DeleteCurrentCard()
     {
         _cardRepository.DeleteCard(Id);
+        if (System.IO.File.Exists(_filePath))
+        {
+            System.IO.File.Delete(_filePath);
+        }
         NavManager.NavigateTo(NavManager.Uri, forceLoad:true);
         await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_currentCard));
     }
