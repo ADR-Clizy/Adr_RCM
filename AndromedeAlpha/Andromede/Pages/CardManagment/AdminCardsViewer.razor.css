@@ -11,6 +11,13 @@
         cursor: pointer;
     }
 
+.no-card-image {
+    width:150px;
+}
+
+    .no-card-image:hover{
+        cursor:pointer;
+    }
 .card-management-button {
     font-size: 350%;
 }

@@ -22,9 +22,9 @@
             <h5>Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
             @if (!_restorerRepository.GetCards(_currentRestorer.Id).Any())
             {
-                <img src="img/ico/add_card.png" class="add-card-button" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
-                <h3 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h3>
-                <h4>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" width="55" height="45" /> afin d'ajouter votre première carte</h4>
+                <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
+                <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
+                <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
             }
             @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.Id))
             {
