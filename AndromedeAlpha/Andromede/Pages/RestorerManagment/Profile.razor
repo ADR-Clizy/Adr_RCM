@@ -15,61 +15,61 @@
 
         @if(GetCurrentRestorer(_authContext.User.Identity.Name) != null)
         {
-        <div class="top-row px-2 centered-title ">
+        <div class="top-row px-2 centered-title">
             <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
             <h3>Bienvenue sur votre profil</h3>
             <h4>Vous pouvez modifier certaine informations si nécessaire</h4>
             <EditForm Model="@_modifiedRestorer" OnValidSubmit="@RestorerModified" id="modification-form">
                 <div class="form-row">
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <label for="userSiretNumber">
                             <span class="oi oi-list form-icon"></span>
                             Numéro de SIRET
                         </label>
                     </div>
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <p class="form-control" id="restaurantSiretNumber">@_modifiedRestorer.RestaurantSiretNumber</p>
                     </div>
                 </div>
                 <div class="horizontal-division"></div>
                 <div class="form-row">
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-2">
                         <label for="userEmail">
                             <img class="form-img" src="img/ico/mail.png">
                             Addresse mail
                         </label>
                     </div>
-                    <div class="form-group col-5">
-                        <p class="form-control" id="emailAddress">@_modifiedRestorer.EmailAddress</p>
+                    <div class="form-group col-sm-10">
+                        <input class="form-control dead-input" id="emailAddress" value="@_modifiedRestorer.EmailAddress"/>
                     </div>
                 </div>
                 <div class="horizontal-division"></div>
                 <div class="form-row">
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <label for="restaurantName">
                             <img class="form-img" src="img/ico/fork_spoon.png" />
                             Nom du restaurant
                         </label>
                     </div>
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_modifiedRestorer.RestaurantName" placeholder="@_modifiedRestorer.RestaurantName" />
                     </div>
                 </div>
 
                 <div class="horizontal-division"></div>
                 <div class="form-row">
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <label for="userPhoneNumber">
                             <span class="oi oi-phone form-icon"></span>
                             Numéro de téléphone
                         </label>
                     </div>
-                    <div class="form-group col-5">
+                    <div class="form-group col-sm-5">
                         <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_modifiedRestorer.PhoneNumber" placeholder="@_modifiedRestorer.PhoneNumber" />
                     </div>
                 </div>
                 <div class="form-row top-divider">
-                    <div class="form-group col-10">
+                    <div class="form-group col-sm-10">
                          <button type="submit" class="btn btn-andromede">Enregistrer les informations</button>
                         @if (_isLoading)
                         {

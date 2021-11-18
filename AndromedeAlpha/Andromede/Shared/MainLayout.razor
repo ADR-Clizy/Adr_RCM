@@ -8,9 +8,13 @@
 @inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @if (PageType.ToString() != "Andromede.Pages.CardManagment.CustomerCardsViewer")
+    {
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+    }
+
 
     <div class="main">
         <div class="content px-4">
@@ -18,3 +22,12 @@
         </div>
     </div>
 </div>
+@code{
+
+    public Type PageType { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        PageType = (this.Body.Target as RouteView)?.RouteData.PageType;
+    }
+}

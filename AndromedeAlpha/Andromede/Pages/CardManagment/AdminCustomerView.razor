@@ -1,5 +1,4 @@
-﻿@page "/CardManagment/Customer/Cards/{id:int}"
-
+﻿@page "/CardManagment/AdminCustomerView/Cards/{id:int}"
 @inherits OwningComponentBase
 @if (GetCurrentRestorer() != null)
 {
@@ -8,7 +7,7 @@
         @if (!_restorerRepository.GetCards(_currentRestorer.Id).Any())
         {
             <h3 style="margin-top:10%">Aucune carte disponible</h3>
-            <img src="img/ico/sad_boy.png" width="150" />
+            <img src="img/ico/sad_boy.png" width="150"/>
         }
         @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.Id))
         {
@@ -24,7 +23,7 @@
 }
 else
 {
-<NotAuthorizedViewer />
+    <NotAuthorizedViewer />
 }
 
 @code {

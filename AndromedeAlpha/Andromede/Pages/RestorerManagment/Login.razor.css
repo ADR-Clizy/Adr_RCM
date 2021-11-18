@@ -1,0 +1,23 @@
+﻿#password-eye-connexion {
+    width: 3rem;
+    margin-top: 40%;
+}
+
+.subform-connexion-link {
+    margin-left: 40%;
+}
+
+@media (max-width: 641px) {
+    #password-eye-connexion {
+        width: 3rem;
+        margin-top: 0;
+    }
+
+    .connexion-div {
+        margin-bottom: 0;
+    }
+
+    .subform-connexion-link {
+        margin-left: 0;
+    }
+}

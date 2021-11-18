@@ -7,6 +7,7 @@
 
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/*******COMMON CLASSES*******/
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -67,12 +68,8 @@ a:checked, .btn-link:checked {
     right: 0.75rem;
     top: 0.5rem;
 }
+/*******COMMON CLASSES*******/
 
-#connexion-form{
-    margin-top: 5rem;
-    margin-right: 35%;
-    margin-left: 40%;
-}
 
 #registration-form{
     margin-top: 2rem;
@@ -85,13 +82,14 @@ a:checked, .btn-link:checked {
     margin-right: 20%;
     margin-left: 30%;
 }
-
+/*******COMMON CUSTOM CLASSES*******/
 .horizontal-division {
     width : 100%;
     margin-bottom: 1rem;
     height : 0.05rem;
     background-color: #6B303A;
 }
+
 .centered-title {
     text-align: center;
 }
@@ -110,39 +108,17 @@ a:checked, .btn-link:checked {
     margin-right: 0.75rem;
 }
 
-.connexion-div {
-    margin-bottom: 7%;
-}
-
 .form-link {
     text-align: left;
 }
 
-.subform-connexion-link{
-    margin-left: 40%;
-}
-
-.subform-registration-link{
-    margin-left: 30%;
-}
-
 .form-img {
-    width:1.5rem;
+    width: 1.5rem;
     margin-right: 0.75rem;
 }
 
-#password-eye-connexion {
-    width:3rem;
-    margin-top : 40%;
-}
-
-#password-eye-registration {
-    width:3rem;
-    margin-top : 30%;
-}
-
 .bottom-divider {
-    margin-bottom:3%;
+    margin-bottom: 3%;
 }
 
 .top-divider {
@@ -150,6 +126,49 @@ a:checked, .btn-link:checked {
 }
 
 .form-alert {
-    color : red;
+    color: red;
+}
+/*******COMMON CUSTOM CLASSES*******/
+
+.subform-registration-link{
+    margin-left: 30%;
+}
+
+#password-eye-registration {
+    width:3rem;
+    margin-top : 30%;
+}
+
+/*******CONNEXION CLASSES*******/
+#connexion-form {
+    margin-top: 5rem;
+    margin-right: 35%;
+    margin-left: 40%;
+}
+/*******CONNEXION CLASSES*******/
+
+@media (max-width: 641px) {
+
+    /*******COMMON CUSTOM CLASSES MOBILE*******/
+    .top-divider {
+        margin-top: 0;
+    }
+
+    .bottom-divider {
+        margin-bottom: 0;
+    }
+    /*******COMMON CUSTOM CLASSES MOBILE*******/
+
+    /*******CONNEXION CLASSES MOBILE*******/
+    #connexion-form {
+        margin-top: 2rem;
+        margin-right: 0;
+        margin-left: 0;
+    }
+    /*******CONNEXION CLASSES MOBILE*******/
+}
+
+@media (max-width: 350px) {
+
 }
 
