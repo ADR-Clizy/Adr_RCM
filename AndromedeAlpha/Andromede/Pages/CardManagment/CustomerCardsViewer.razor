@@ -40,7 +40,7 @@ else
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
     }
 
-    public Restorer GetCurrentRestorer()
+    Restorer GetCurrentRestorer()
     {
         _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
         return _currentRestorer;

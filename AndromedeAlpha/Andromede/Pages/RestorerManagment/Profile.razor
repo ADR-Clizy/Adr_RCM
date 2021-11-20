@@ -104,7 +104,7 @@
         _modifiedRestorer = new Restorer();
     }
 
-    private void RestorerModified()
+    void RestorerModified()
     {
         _isLoading = true;
         _restorerRepository.UpdateProfile(_modifiedRestorer);
@@ -112,7 +112,7 @@
         _isLoading = false;
     }
 
-    private Restorer GetCurrentRestorer(string iId)
+    Restorer GetCurrentRestorer(string iId)
     {
         _modifiedRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
         return _modifiedRestorer;

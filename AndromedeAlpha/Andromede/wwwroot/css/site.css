@@ -71,11 +71,7 @@ a:checked, .btn-link:checked {
 /*******COMMON CLASSES*******/
 
 
-#registration-form{
-    margin-top: 2rem;
-    margin-right: 25%;
-    margin-left: 30%;
-}
+
 
 #modification-form {
     margin-top: 5rem;
@@ -130,32 +126,51 @@ a:checked, .btn-link:checked {
 }
 /*******COMMON CUSTOM CLASSES*******/
 
-.subform-registration-link{
-    margin-left: 30%;
-}
-
-#password-eye-registration {
-    width:3rem;
-    margin-top : 30%;
-}
-
 /*******CONNEXION CLASSES*******/
 #connexion-form {
     margin-top: 5rem;
-    margin-right: 35%;
-    margin-left: 40%;
+    margin-right: 30%;
+    margin-left: 35%;
 }
 /*******CONNEXION CLASSES*******/
+
+/*******REGISTRATION CLASSES*******/
+#registration-form {
+    margin-top: 2rem;
+    margin-right: 10%;
+    margin-left: 19%;
+}
+/*******REGISTRATION CLASSES*******/
+
+
+
+@media (max-width: 1048px) {
+    /*******CONNEXION CLASSES MOBILE*******/
+    #connexion-form {
+        margin-top: 5rem;
+        margin-right: 17%;
+        margin-left: 21%;
+    }
+    /*******CONNEXION CLASSES MOBILE*******/
+
+    /*******REGISTRATION CLASSES TABLET*******/
+    #registration-form {
+        margin-top: 1rem;
+        margin-right: 5%;
+        margin-left: 14%;
+    }
+    /*******REGISTRATION CLASSES TABLET*******/
+}
 
 @media (max-width: 641px) {
 
     /*******COMMON CUSTOM CLASSES MOBILE*******/
     .top-divider {
-        margin-top: 0;
+        margin-top: 1%;
     }
 
     .bottom-divider {
-        margin-bottom: 0;
+        margin-bottom: 1%;
     }
     /*******COMMON CUSTOM CLASSES MOBILE*******/
 
@@ -166,6 +181,14 @@ a:checked, .btn-link:checked {
         margin-left: 0;
     }
     /*******CONNEXION CLASSES MOBILE*******/
+
+    /*******REGISTRATION CLASSES MOBILE*******/
+    #registration-form {
+        margin-top: 0;
+        margin-right: 0;
+        margin-left: 0;
+    }
+    /*******REGISTRATION CLASSES MOBILE*******/
 }
 
 @media (max-width: 350px) {

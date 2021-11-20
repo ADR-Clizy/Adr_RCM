@@ -14,15 +14,13 @@
 
 <div class="top-row px-2 centered-title ">
     <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
-    <h5 class="test">Connexion</h5>
     <EditForm Model="@_restorer" OnValidSubmit="@RestorerConnection" id="connexion-form">
         <div class="form-row">
-            <div class="col-sm-1"></div>
             <div class="form-group col-sm-10">
                 <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
                 <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
             </div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-2"></div>
         </div>
         <div class="form-row">
             <div class="form-group col-sm-10">
@@ -35,7 +33,6 @@
 
         </div>
         <div class="form-row">
-            <div class="col-sm-1"></div>
             <div class="form-group col-sm-10">
                 <button type="submit" class="btn btn-andromede connexion-div">Connexion</button>
                 <p id="errorOccurred" class="form-alert form-text">@_errorOccurred</p>
@@ -46,7 +43,7 @@
                     </div>
                 }
             </div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-2"></div>
         </div>
     </EditForm>
 </div>
@@ -78,7 +75,7 @@
         _storedRestorer = new Restorer();
     }
 
-    private async Task RestorerConnection()
+    async Task RestorerConnection()
     {
         _isLoading = true;
         _storedRestorer = _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress);
@@ -96,12 +93,12 @@
         _isLoading = false;
     }
 
-    private bool isRestorerExisting()
+    bool isRestorerExisting()
     {
         return _storedRestorer != null;
     }
 
-    private bool isPasswordCorrect()
+    bool isPasswordCorrect()
     {
         return BCryptNet.Verify(_restorer.Password, _storedRestorer.Password);
     }

@@ -98,13 +98,13 @@
         _currentRestorerCard.CardName = "";
     }
 
-    private Restorer GetAuthRestorer(string iId)
+    Restorer GetAuthRestorer(string iId)
     {
         _authRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
         return _authRestorer;
     }
 
-    private void ViewFileAndCardName(IFileListEntry[] files)
+    void ViewFileAndCardName(IFileListEntry[] files)
     {
         _isLoading = true;
         _fileInfos = "";
@@ -131,12 +131,7 @@
         _isLoading = false;
     }
 
-    void CheckCardNameValidity(string iCardName)
-    {
-
-    }
-
-    private async Task CardAdded()
+    async Task CardAdded()
     {
         string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
         if (_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)

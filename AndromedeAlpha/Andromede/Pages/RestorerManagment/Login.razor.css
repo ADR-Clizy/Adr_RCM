@@ -1,23 +1,31 @@
 ﻿#password-eye-connexion {
     width: 3rem;
-    margin-top: 40%;
+    margin-top: 43%;
 }
 
 .subform-connexion-link {
-    margin-left: 40%;
+    margin-left: 35%;
 }
 
-@media (max-width: 641px) {
-    #password-eye-connexion {
-        width: 3rem;
-        margin-top: 0;
+@media (max-width: 1048px) {
+    .subform-connexion-link {
+        margin-left: 20%;
     }
+}
 
+
+@media (max-width: 641px) {
     .connexion-div {
         margin-bottom: 0;
     }
 
     .subform-connexion-link {
         margin-left: 0;
+    }
+}
+
+@media (max-width: 575px) {
+    #password-eye-connexion {
+        margin-top: 0;
     }
 }

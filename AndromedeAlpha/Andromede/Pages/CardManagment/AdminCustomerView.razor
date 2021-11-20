@@ -1,6 +1,6 @@
 ﻿@page "/CardManagment/AdminCustomerView/Cards/{id:int}"
 @inherits OwningComponentBase
-@if (GetCurrentRestorer() != null)
+@if (GetCurrentRestorer() != null && isRestorerSubscribed())
 {
     <div class="top-row centered-title">
         <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
@@ -37,11 +37,20 @@ else
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
     }
 
-    public Restorer GetCurrentRestorer()
+    Restorer GetCurrentRestorer()
     {
-        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
         return _currentRestorer;
+    }
+
+    bool isRestorerSubscribed()
+    {
+        if(_currentRestorer != null)
+        {
+            return _currentRestorer.Subscribed;
+        }
+        return false;
     }
 }

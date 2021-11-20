@@ -12,15 +12,14 @@
 
 @page "/RestorerManagment/Registration"
 
-<img class="x-small" src="img/andromede_white_bg.png" />
+
 <div class="top-row centered-title ">
-    <h3>Bienvenue !</h3>
-    <h5>Veuillez remplir le formulaire ci-dessous afin de vous inscrire aux services Andromede</h5>
+    <img class="small bottom-divider" src="img/andromede_white_bg.png" />
     <h6><span class="oi oi-warning form-icon"></span>Une souscription à Andromede Alpha est nécessaire afin de pouvoir accéder à la numérisation des cartes</h6>
     <EditForm Model="@_restorer" OnValidSubmit="@RestorerRegistration" id="registration-form">
         <DataAnnotationsValidator />
         <div class="form-row">
-            <div class="form-group col-10">
+            <div class="form-group col-sm-10">
                 <label for="userSiretNumber">
                     <span class="oi oi-list form-icon"></span>
                     Numéro de SIRET
@@ -28,9 +27,10 @@
                 <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_restorer.RestaurantSiretNumber" />
                 <ValidationMessage For="@(() => _restorer.RestaurantSiretNumber)" />
             </div>
+            <div class="col-sm-2"></div>
         </div>
         <div class="form-row">
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="restaurantName">
                     <img class="form-img" src="img/ico/fork_spoon.png" />
                     Nom du restaurant
@@ -38,7 +38,7 @@
                 <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_restorer.RestaurantName" />
                 <ValidationMessage For="@(() => _restorer.RestaurantName)" />
             </div>
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="restaurantState">
                     <img class="form-img" src="img/ico/fork_knife_loc.png" />
                     Pays du restaurant
@@ -48,10 +48,10 @@
                 </InputSelect>
                 <ValidationMessage For="@(() => _restorer.RestaurantState)" />
             </div>
+            <div class="col-sm-2"></div>
         </div>
-        <div class="horizontal-division"></div>
         <div class="form-row">
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="userFirstName">
                     <span class="oi oi-person form-icon"></span>
                     Prénom
@@ -59,7 +59,7 @@
                 <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_restorer.FirstName" />
                 <ValidationMessage For="@(() => _restorer.FirstName)" />
             </div>
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="userLastName">
                     <span class="oi oi-person form-icon"></span>
                     Nom de famille
@@ -67,9 +67,10 @@
                 <InputText type="text" class="form-control" id="userLastName" @bind-Value="_restorer.LastName" />
                 <ValidationMessage For="@(() => _restorer.LastName)" />
             </div>
+            <div class="col-sm-2"></div>
         </div>
         <div class="form-row">
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="userEmail">
                     <img class="form-img" src="img/ico/mail.png">
                     Addresse mail
@@ -77,7 +78,7 @@
                 <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
                 <ValidationMessage For="@(() => _restorer.EmailAddress)" />
             </div>
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="userPhoneNumber">
                     <span class="oi oi-phone form-icon"></span>
                     Numéro de téléphone
@@ -85,9 +86,10 @@
                 <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_restorer.PhoneNumber" />
                 <ValidationMessage For="@(() => _restorer.PhoneNumber)" />
             </div>
+            <div class="col-sm-2"></div>
         </div>
         <div class="form-row">
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="userPassword">
                     <span class="oi oi-key form-icon"></span>
                     Mot de passe
@@ -95,7 +97,7 @@
                 <InputText type="@InputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
                 <ValidationMessage For="@(() => _restorer.Password)" />
             </div>
-            <div class="form-group col-5">
+            <div class="form-group col-sm-5">
                 <label for="confirmedUserPassword">
                     <span class="oi oi-key form-icon"></span>
                     Confirmer le mot de passe
@@ -106,12 +108,12 @@
                     <small id="missMatchedPasswords" class="form-alert form-text">@_missMatchedPasswords</small>
                 </div>
             </div>
-            <div class="form-group col-2">
+            <div class="form-group col-sm-2">
                 <img id="password-eye-registration" src="img/ico/password_eye.png" @onclick="ShowPassword" />
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-10">
+            <div class="form-group col-sm-10">
                 <button type="submit" class="btn btn-andromede">S'inscrire</button>
                 <p id="existingAccount" class="form-alert form-text">@_existingAccount</p>
                 @if (_isLoading)
@@ -121,6 +123,7 @@
                     </div>
                 }
             </div>
+            <div class="col-sm-2"></div>
         </div>
     </EditForm>
 </div>

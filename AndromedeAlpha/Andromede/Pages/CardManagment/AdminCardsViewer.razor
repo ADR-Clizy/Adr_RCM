@@ -13,13 +13,13 @@
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetCurrentRestorer() != null && Id == int.Parse(_authContext.User.Identity.Name))
+        @if (GetCurrentRestorer() != null && Id == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
         <div class="top-row centered-title">
             <img class="small centered-image" src="img/andromede_white_bg.png" />
             <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
             <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
-            <h5>Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
+            <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
             @if (!_restorerRepository.GetCards(_currentRestorer.Id).Any())
             {
                 <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
@@ -54,7 +54,7 @@
                         <span @onclick="@(() => UpdateCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
                     </div>
                     <div class="col-4">
-                        <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Upload a card"))" />
+                        <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
                     </div>
                     <div class="col-4">
                         <span @onclick="@(() => DeleteCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-trash card-management-button"></span>
@@ -62,8 +62,6 @@
                 </div>
 
             }
-
-
         </div>
         }
         else
@@ -89,15 +87,26 @@
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
     }
 
-    public Restorer GetCurrentRestorer()
+    Restorer GetCurrentRestorer()
     {
-        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
         return _currentRestorer;
     }
 
-    public void DeleteCurrentCard(int iCardId, string iCardName)
+    bool isRestorerSubscribed()
+    {
+        if(_currentRestorer != null)
+        {
+            Console.WriteLine(_currentRestorer.Subscribed);
+            return _currentRestorer.Subscribed;
+            
+        }
+        return false;
+    }
+
+    void DeleteCurrentCard(int iCardId, string iCardName)
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.Id), iCardId);
@@ -109,7 +118,7 @@
         Modal.Show<DeleteCard>($"Supprimer : {iCardName}", aParameters, aOptions);
     }
 
-    public void UpdateCurrentCard(int iCardId, string iCardName)
+    void UpdateCurrentCard(int iCardId, string iCardName)
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.Id), iCardId);
