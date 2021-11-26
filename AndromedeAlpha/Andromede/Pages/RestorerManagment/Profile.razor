@@ -1,6 +1,6 @@
 ﻿@*
     *
-    * (c) 2021-2021 Copyright Andromede
+    * (c) 2021 Copyright Andromede
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
@@ -12,7 +12,6 @@
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-
         @if(GetCurrentRestorer(_authContext.User.Identity.Name) != null)
         {
         <div class="top-row px-2 centered-title">
@@ -70,7 +69,7 @@
                 </div>
                 <div class="form-row top-divider">
                     <div class="form-group col-sm-10">
-                         <button type="submit" class="btn btn-andromede">Enregistrer les informations</button>
+                        <button type="submit" class="btn btn-andromede">Enregistrer les informations</button>
                         @if (_isLoading)
                         {
                              <div class="spinner-border text-andromede" role="status">
