@@ -142,10 +142,10 @@
             try
             {
                 _fileInfos = "";
-                _currentRestorerCard.RestorerId = _authRestorer.Id;
+                _currentRestorerCard.RestorerId = _authRestorer.RestorerId;
                 _currentRestorerCard = _cardRepository.NewCard(_currentRestorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
-                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
+                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.CardId}.pdf";
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
@@ -154,7 +154,7 @@
                 _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
             }
             _fileValidation = "La carte a été correctement ajoutée au serveur Andromede.\n";
-            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.RestorerId}", forceLoad: true);
             _isLoading = false;
         }
         else

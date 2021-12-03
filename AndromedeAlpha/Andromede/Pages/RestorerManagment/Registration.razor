@@ -181,8 +181,8 @@
         {
             _restorer.Password = _hashedPassword;
             _restorer = _restorerRepository.NewRestorer(_restorer);
-            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorer.Id);
-            await _sessionStorage.SetItemAsync("sId", _restorer.Id);
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorer.RestorerId);
+            await _sessionStorage.SetItemAsync("sId", _restorer.RestorerId);
             await _sessionStorage.SetItemAsync("sEmailAddress", _restorer.EmailAddress);
             //Start the Session
             NavManager.NavigateTo("/Restoration/UploadCard");

@@ -81,8 +81,8 @@
         _storedRestorer = _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress);
         if (isRestorerExisting() && isPasswordCorrect())
         {
-            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.Id);
-            await _sessionStorage.SetItemAsync("sId", _storedRestorer.Id);
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.RestorerId);
+            await _sessionStorage.SetItemAsync("sId", _storedRestorer.RestorerId);
             await _sessionStorage.SetItemAsync("sEmailAddress", _storedRestorer.EmailAddress);
             NavManager.NavigateTo("/");
         }

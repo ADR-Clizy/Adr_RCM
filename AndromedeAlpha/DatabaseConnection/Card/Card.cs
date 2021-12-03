@@ -9,7 +9,8 @@ namespace DatabaseConnection
 {
     public class Card
     {
-        public int Id { get; set; }
+        [Key]
+        public int CardId { get; set; }
 
         [Required(ErrorMessage = "Champ requis")]
         [MaxLength(40, ErrorMessage = "Champ trop long")]

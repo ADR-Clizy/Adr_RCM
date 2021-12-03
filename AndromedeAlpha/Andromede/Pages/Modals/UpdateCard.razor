@@ -67,15 +67,13 @@
 
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
-    [Parameter] public int Id { get; set; }
+    [Parameter] public int CardId { get; set; }
 
     private string _fileInfos;
     private string _fileValidation;
     private string _fileError;
     private string _cardInfos;
 
-    private bool _isFileCorrect;
-    private bool _isCardInfoCorrect;
     private bool _isLoading;
 
     private IFileListEntry _fileToUpload;
@@ -94,7 +92,7 @@
         _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
         acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
         _isLoading = false;
-        _currentRestorerCard = _cardRepository.GetCardWithId(Id);
+        _currentRestorerCard = _cardRepository.GetCardWithId(CardId);
     }
 
     Restorer GetAuthRestorer(string iId)
@@ -114,26 +112,14 @@
         else if (_fileToUpload.Size > MAX_FILE_SIZE)
         {
             _fileInfos = $"Le fichier est trop gros. La taille maximale est : {MAX_FILE_SIZE_MB} MB.";
-            _isFileCorrect = false;
         }
         else if (!acceptedFileTypes.Contains(_fileToUpload.Type))
         {
             _fileInfos = "Seuls les fichiers de type PDF sont acceptés";
-            _isFileCorrect = false;
         }
         else
         {
             _fileInfos = $"Nouvelle carte : {_fileToUpload.Name}";
-            _isFileCorrect = true;
-        }
-
-        if (_currentRestorerCard.CardName.Length == 0 || _currentRestorerCard.CardName.Length >= 40)
-        {
-            _isCardInfoCorrect = false;
-        }
-        else
-        {
-            _isCardInfoCorrect = true;
         }
         _isLoading = false;
     }
@@ -144,14 +130,13 @@
         if (_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)
         {
             _isLoading = true;
-            _isFileCorrect = false;
             _cardInfos = "";
             try
             {
                 _fileInfos = "";
                 _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
-                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.Id}.pdf";
+                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.CardId}.pdf";
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
@@ -160,7 +145,7 @@
                 _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
             }
             _fileValidation = "La carte a été correctement modifiée.\n";
-            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.Id}", forceLoad: true);
+            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.RestorerId}", forceLoad: true);
             _isLoading = false;
         }
         else

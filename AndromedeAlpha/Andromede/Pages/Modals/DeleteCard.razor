@@ -19,7 +19,7 @@
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
-    [Parameter] public int Id { get; set; }
+    [Parameter] public int CardId { get; set; }
 
     private Card _currentCard;
     private string _filePath;
@@ -29,13 +29,13 @@
     protected override void OnInitialized()
     {
         _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
-        _currentCard = _cardRepository.GetCardWithId(Id);
-        _filePath = $"wwwroot/Customer/Cards/{Id}.pdf";
+        _currentCard = _cardRepository.GetCardWithId(CardId);
+        _filePath = $"wwwroot/Customer/Cards/{CardId}.pdf";
     }
 
     async Task DeleteCurrentCard()
     {
-        _cardRepository.DeleteCard(Id);
+        _cardRepository.DeleteCard(CardId);
         if (System.IO.File.Exists(_filePath))
         {
             System.IO.File.Delete(_filePath);

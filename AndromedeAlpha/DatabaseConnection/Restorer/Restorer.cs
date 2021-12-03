@@ -10,7 +10,8 @@ namespace DatabaseConnection
 {
     public class Restorer
     {
-        public int Id { get; set; }
+        [Key]
+        public int RestorerId { get; set; }
 
 
         [Required(ErrorMessage = "Champ requis")]

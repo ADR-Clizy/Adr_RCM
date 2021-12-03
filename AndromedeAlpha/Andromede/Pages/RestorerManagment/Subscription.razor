@@ -1,7 +1,17 @@
 ﻿
 @page "/RestorerManagment/Subscription"
+<div class="top-row centered-title ">
+    <img class="small bottom-divider" src="img/andromede_white_bg.png" />
+    <h3>Abonnement</h3>
+</div>
 
-<h3>Subscription</h3>
+<form action="/create-checkout-session" method="POST">
+    <input type="hidden" name="lookup_key" value="price_1K08xJKx17ccypEKrW7Cnucx" />
+    <button class="btn btn-andromede" id="checkout-and-portal-button" type="submit">S'abonner</button>
+</form>
+
+
+
 
 @code {
 

@@ -5,7 +5,7 @@
     *
 *@
 
-@page "/CardManagment/Restorer/Cards/{id:int}"
+@page "/CardManagment/Restorer/Cards/{RestorerId:int}"
 @inject NavigationManager NavManager
 @inject IModalService Modal
 @inherits OwningComponentBase
@@ -13,20 +13,20 @@
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetCurrentRestorer() != null && Id == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
+        @if (GetCurrentRestorer() != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
         <div class="top-row centered-title">
             <img class="small centered-image" src="img/andromede_white_bg.png" />
             <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
             <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
             <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
-            @if (!_restorerRepository.GetCards(_currentRestorer.Id).Any())
+            @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
             {
                 <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
                 <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
                 <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
             }
-            @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.Id))
+            @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
             {
                 <div class="row">
                     <div class="col-2"></div>
@@ -45,19 +45,19 @@
                 <div class="row">
                     <div class="col-2"></div>
                     <div class="col-8">
-                        <iframe src=@($"https://localhost:5001/Customer/Cards/{aCard.Id}.pdf") class="pdf-card-viewer" type='application/pdf' />
+                        <iframe src=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") class="pdf-card-viewer" type='application/pdf' />
                     </div>
                     <div class="col-2"></div>
                 </div>
                 <div class="row bottom-divider">
                     <div class="col-4">
-                        <span @onclick="@(() => UpdateCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
+                        <span @onclick="@(() => UpdateCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
                     </div>
                     <div class="col-4">
                         <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
                     </div>
                     <div class="col-4">
-                        <span @onclick="@(() => DeleteCurrentCard(aCard.Id, aCard.CardName))" class="oi oi-trash card-management-button"></span>
+                        <span @onclick="@(() => DeleteCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-trash card-management-button"></span>
                     </div>
                 </div>
 
@@ -78,16 +78,15 @@
 @code
 {
     [Parameter]
-    public int Id { get; set; }
+    public int RestorerId { get; set; }
 
     private Restorer _currentRestorer;
-    private List<Card> _cards;
     private IRestorerRepository _restorerRepository;
 
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _currentRestorer = _restorerRepository.GetRestorerWithId(Id);
+        _currentRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
     }
 
     Restorer GetCurrentRestorer()
@@ -109,7 +108,7 @@
     void DeleteCurrentCard(int iCardId, string iCardName)
     {
         var aParameters = new ModalParameters();
-        aParameters.Add(nameof(Card.Id), iCardId);
+        aParameters.Add(nameof(Card.CardId), iCardId);
         var aOptions = new ModalOptions()
         {
             HideCloseButton = true,
@@ -121,7 +120,7 @@
     void UpdateCurrentCard(int iCardId, string iCardName)
     {
         var aParameters = new ModalParameters();
-        aParameters.Add(nameof(Card.Id), iCardId);
+        aParameters.Add(nameof(Card.CardId), iCardId);
         Modal.Show<UpdateCard>($"Modifier : {iCardName}", aParameters);
     }
 }
