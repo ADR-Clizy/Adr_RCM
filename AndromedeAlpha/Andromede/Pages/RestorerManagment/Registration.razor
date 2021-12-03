@@ -140,7 +140,7 @@
     private bool _isLoading;
 
     private Restorer _restorer = new Restorer();
-    private Restorer _restorerDataToStore = new Restorer();
+    private Restorer _restorerCopy = new Restorer();
 
     public IRestorerRepository _restorerRepository { get; set; }
 
@@ -179,15 +179,28 @@
         }
         else
         {
-            _restorer.Password = _hashedPassword;
-            _restorer = _restorerRepository.NewRestorer(_restorer);
-            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorer.RestorerId);
-            await _sessionStorage.SetItemAsync("sId", _restorer.RestorerId);
-            await _sessionStorage.SetItemAsync("sEmailAddress", _restorer.EmailAddress);
+            CopyRestorerData();
+            _restorerCopy = _restorerRepository.NewRestorer(_restorerCopy);
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorerCopy.RestorerId);
+            await _sessionStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
+            await _sessionStorage.SetItemAsync("sEmailAddress", _restorerCopy.EmailAddress);
             //Start the Session
-            NavManager.NavigateTo("/Restoration/UploadCard");
+            NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad:true);
         }
         _isLoading = false;
+    }
+
+    void CopyRestorerData()
+    {
+        _restorerCopy.RestorerId = _restorer.RestorerId;
+        _restorerCopy.FirstName = _restorer.FirstName;
+        _restorerCopy.LastName = _restorer.LastName;
+        _restorerCopy.PhoneNumber = _restorer.PhoneNumber;
+        _restorerCopy.RestaurantSiretNumber = _restorer.RestaurantSiretNumber;
+        _restorerCopy.RestaurantName = _restorer.RestaurantName;
+        _restorerCopy.RestaurantState = _restorer.RestaurantState;
+        _restorerCopy.EmailAddress = _restorer.EmailAddress;
+        _restorerCopy.Password = _hashedPassword;
     }
 
     private bool IsPasswordConfirmed()
