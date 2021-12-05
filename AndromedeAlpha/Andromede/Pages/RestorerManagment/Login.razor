@@ -7,8 +7,10 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
+@inject IModalService Modal
 @inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
 @inherits OwningComponentBase
+@using Andromede.Pages.Modals
 
 @page "/RestorerManagment/Login"
 
@@ -19,6 +21,7 @@
             <div class="form-group col-sm-10">
                 <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
                 <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
+                <ValidationMessage For="@(() => _restorer.EmailAddress)" />
             </div>
             <div class="col-sm-2"></div>
         </div>
@@ -48,7 +51,7 @@
     </EditForm>
 </div>
 <div>
-    <a href="#" class="subform-connexion-link">Mot de passe oublié ?</a>
+    <a href="/RestorerManagment/Login" @onclick="ResetPassword" class="subform-connexion-link">Mot de passe oublié ?</a>
 </div>
 <div>
     <a href="RestorerManagment/Registration" class="subform-connexion-link">Pas encore inscrit ?</a>
@@ -84,7 +87,15 @@
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.RestorerId);
             await _sessionStorage.SetItemAsync("sId", _storedRestorer.RestorerId);
             await _sessionStorage.SetItemAsync("sEmailAddress", _storedRestorer.EmailAddress);
-            NavManager.NavigateTo("/");
+            if (_storedRestorer.Subscribed == true)
+            {
+                NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_storedRestorer.RestorerId}", forceLoad: true);
+            }
+            else
+            {
+                NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad: true);
+            }
+
         }
         else
         {
@@ -110,5 +121,10 @@
             _inputType = "text";
         else
             _inputType = "password";
+    }
+
+    void ResetPassword()
+    {
+        Modal.Show<ResetPassword>($"Réinitialiser le mot de passe");
     }
 }

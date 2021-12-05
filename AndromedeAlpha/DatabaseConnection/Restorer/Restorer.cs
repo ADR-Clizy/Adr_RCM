@@ -58,12 +58,13 @@ namespace DatabaseConnection
 
         [Required(ErrorMessage = "Champ requis")] 
         [DataType(DataType.Password)]
+        [MinLength(6, ErrorMessage = "Champ trop court (entre 6 et 20 caractères)")]
         public string Password { get; set; }
 
         public bool Subscribed { get; set; } = false;
 
-        public DateTime DateOfSubscription { get; set; }
-
         public List<Card> Cards { get; set; }
+
+        public List<RestorerClaim> RestorerClaims { get; set; }
     }
 }

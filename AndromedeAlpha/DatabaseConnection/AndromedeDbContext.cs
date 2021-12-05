@@ -11,6 +11,7 @@ namespace DatabaseConnection
     {
         public DbSet<Restorer> Restorers { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<RestorerClaim> RestorerClaims { get; set; }
 
         public AndromedeDbContext(DbContextOptions<AndromedeDbContext> options) 
             : base(options)

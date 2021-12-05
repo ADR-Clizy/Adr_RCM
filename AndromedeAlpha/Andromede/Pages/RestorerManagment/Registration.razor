@@ -94,7 +94,7 @@
                     <span class="oi oi-key form-icon"></span>
                     Mot de passe
                 </label>
-                <InputText type="@InputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
+                <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
                 <ValidationMessage For="@(() => _restorer.Password)" />
             </div>
             <div class="form-group col-sm-5">
@@ -103,7 +103,7 @@
                     Confirmer le mot de passe
                 </label>
                 <div>
-                    <InputText type="@InputType" class="form-control" id="confirmedUserPassword" @bind-Value="_confirmedPassword" />
+                    <InputText type="@_inputType" class="form-control" id="confirmedUserPassword" @bind-Value="_confirmedPassword" />
                     <ValidationMessage For="@(() => _restorer.Password)" />
                     <small id="missMatchedPasswords" class="form-alert form-text">@_missMatchedPasswords</small>
                 </div>
@@ -138,6 +138,7 @@
     private string _existingAccount;
     private string _hashedPassword;
     private bool _isLoading;
+    private string _inputType = "password";
 
     private Restorer _restorer = new Restorer();
     private Restorer _restorerCopy = new Restorer();
@@ -148,11 +149,6 @@
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
         _restorer.RestaurantState = "France";
-        //Remove this as soon as Andromede become International (:p)
-        _confirmedPassword = "";
-        _missMatchedPasswords = "";
-        _existingAccount = "";
-        _hashedPassword = "";
         _isLoading = false;
     }
 
@@ -219,12 +215,12 @@
         return _restorerRepository.GetRestorerWithRestaurantSiretNumber(_restorer.RestaurantSiretNumber) != null;
     }
 
-    private string InputType = "password";
+
     private void ShowPassword()
     {
-        if (InputType == "password")
-            InputType = "text";
+        if (_inputType == "password")
+            _inputType = "text";
         else
-            InputType = "password";
+            _inputType = "password";
     }
 }
