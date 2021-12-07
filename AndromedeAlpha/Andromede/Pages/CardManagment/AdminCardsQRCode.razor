@@ -1,0 +1,73 @@
+﻿@*
+    *
+    * (c) 2021-2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@inject NavigationManager NavManager
+@inherits OwningComponentBase
+@using Tools;
+
+@page "/CardManagment/CardsQRCode"
+
+<AuthorizeView>
+    <Authorized Context="_authContext">
+        @if (GetCurrentRestorer(_authContext.User.Identity.Name) != null)
+        {
+            <div class="top-row centered-title">
+                <div class="row">
+                    <div class="col-12">
+                        <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
+                        <h5>Essayez par vous même !</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <img width="350" src="@String.Format("data:image/png;base64,{0}",
+                                               Convert.ToBase64String(QRCodeManager.GenerateQRCode
+                                                                     ($"https://localhost:5001/CardManagment/Customer/Cards/{_authContext.User.Identity.Name}"
+                                                                      ,10)))" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Le bouton ci-dessous vous permettera de recevoir un mail avec une plaquette en PDF et un fichier photo du QR Code</h5>
+                    </div>
+                </div>
+
+                <button class="btn btn-andromede" @onclick="SendQRCodeMail">Recevoir mes codes</button>
+            </div>
+        }
+        else
+        {
+            <NotAuthorizedViewer />
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedViewer />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private Restorer _currentRestorer;
+
+    private IRestorerRepository _restorerRepository;
+
+    protected override void OnInitialized()
+    {
+        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _currentRestorer = new Restorer();
+    }
+
+    Restorer GetCurrentRestorer(string iId)
+    {
+        _currentRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
+        return _currentRestorer;
+    }
+
+    async Task SendQRCodeMail()
+    {
+        await QRCodeMailSender.SendMail(_currentRestorer);
+    }
+}

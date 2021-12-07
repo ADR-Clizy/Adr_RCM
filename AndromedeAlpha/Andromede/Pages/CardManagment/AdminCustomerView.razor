@@ -1,30 +1,38 @@
 ﻿@page "/CardManagment/AdminCustomerView/Cards/{RestorerId:int}"
 @inherits OwningComponentBase
-@if (GetCurrentRestorer() != null && isRestorerSubscribed())
-{
-    <div class="top-row centered-title">
-        <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
-        @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+
+<AuthorizeView>
+    <Authorized Context="_authContext">
+        @if (GetCurrentRestorer() != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
-            <h3 style="margin-top:10%">Aucune carte disponible</h3>
-            <img src="img/ico/sad_boy.png" width="150"/>
-        }
-        @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
-        {
-            <div class="row">
-                <div class="col-2"></div>
-                <div class="col-8">
-                    <a class="btn btn-andromede" href=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
-                </div>
-                <div class="col-2"></div>
+            <div class="top-row centered-title">
+                <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
+                @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+                {
+                    <h3 style="margin-top:10%">Aucune carte disponible</h3>
+                    <img src="img/ico/sad_boy.png" width="150" />
+                }
+                @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
+                {
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <a class="btn btn-andromede" href=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                }
             </div>
         }
-    </div>
-}
-else
-{
-    <NotAuthorizedViewer />
-}
+        else
+        {
+            <NotAuthorizedViewer />
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedViewer />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     [Parameter]
