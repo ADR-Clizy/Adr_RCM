@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseConnection
 {

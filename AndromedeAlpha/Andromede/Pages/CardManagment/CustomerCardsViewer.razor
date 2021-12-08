@@ -1,4 +1,11 @@
-﻿@page "/CardManagment/Customer/Cards/{RestorerId:int}"
+﻿@*
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@page "/CardManagment/Customer/Cards/{RestorerId:int}"
 
 @inherits OwningComponentBase
 @if (GetCurrentRestorer() != null)
@@ -24,7 +31,7 @@
 }
 else
 {
-<NotAuthorizedViewer />
+    <NotAuthorizedViewer />
 }
 
 @code {

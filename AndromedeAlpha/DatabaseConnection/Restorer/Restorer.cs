@@ -1,10 +1,12 @@
-﻿
-using System;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseConnection
 {
@@ -14,7 +16,6 @@ namespace DatabaseConnection
         public int RestorerId { get; set; }
 
 
-        [Required(ErrorMessage = "Champ requis")]
         [RegularExpression(@"^\d+$",
          ErrorMessage = "Seuls les chiffres sont autorisés")]
         [MaxLength(14, ErrorMessage = "Champ trop long")]
@@ -32,14 +33,12 @@ namespace DatabaseConnection
         public string RestaurantState { get; set; }
 
 
-        [Required(ErrorMessage = "Champ requis")]
         [RegularExpression(@"^[a-zA-Zéèçëïêîèìœ\s]+$",
          ErrorMessage = "Chiffres / Caractères spéciaux interdits")]
         [MaxLength(40, ErrorMessage = "Champ trop long")]
         public string FirstName { get; set; }
 
 
-        [Required(ErrorMessage = "Champ requis")]
         [RegularExpression(@"^[a-zA-Zéèçëïêîèìœ\s]+$",
          ErrorMessage = "Chiffres / Caractères spéciaux interdits")]
         [MaxLength(40, ErrorMessage = "Champ trop long")]
@@ -59,6 +58,8 @@ namespace DatabaseConnection
         [Required(ErrorMessage = "Champ requis")] 
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Champ trop court (entre 6 et 20 caractères)")]
+        //[RegularExpression(@"^(?=.*[0-9])(?=.*[!@#$&*])$",
+        // ErrorMessage = "Doit contenir 1 chiffre et 1 caractère spécial")]
         public string Password { get; set; }
 
         public bool Subscribed { get; set; } = false;

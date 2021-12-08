@@ -23,6 +23,7 @@
                     <div class="form-group col-sm-8">
                         <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
                         <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_currentRestorerCard.CardName" />
+                        <ValidationMessage For="@(() => _currentRestorerCard.CardName)" />
                         <p style="color:red" class="top-divider">@_cardInfos</p>
                     </div>
                     <div class="form-group col-sm-2"></div>

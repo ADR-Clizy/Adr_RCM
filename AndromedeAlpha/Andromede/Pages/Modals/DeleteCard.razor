@@ -1,4 +1,11 @@
-﻿@inject IJSRuntime jsRuntime
+﻿@*
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
 @inherits OwningComponentBase
 
@@ -40,7 +47,7 @@
         {
             System.IO.File.Delete(_filePath);
         }
-        NavManager.NavigateTo(NavManager.Uri, forceLoad:true);
+        NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
         await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_currentCard));
     }
 

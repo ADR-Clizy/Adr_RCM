@@ -1,10 +1,17 @@
-﻿.subform-registration-link {
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+.subform-registration-link {
     margin-left: 20%;
 }
 
 #password-eye-registration {
     width: 3rem;
-    margin-top:17%;
+    margin-top:30px;
 }
 
 
@@ -12,20 +19,12 @@
     .subform-registration-link {
         margin-left: 15%;
     }
-
-    #password-eye-registration {
-        margin-top: 20%;
-    }
 }
 
 
 @media (max-width: 641px) {
     .subform-registration-link {
         margin-left: 0;
-    }
-
-    #password-eye-registration {
-        margin-top: 20%;
     }
 }
 

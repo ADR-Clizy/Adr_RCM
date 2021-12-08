@@ -1,6 +1,6 @@
 /*
 *
-* (c) 2021-2021 Copyright Andromede
+* (c) 2021 Copyright Andromede
 * Unauthorized use and disclosure strictly forbidden
 *
 */
@@ -71,13 +71,6 @@ a:checked, .btn-link:checked {
 /*******COMMON CLASSES*******/
 
 
-
-
-#modification-form {
-    margin-top: 5rem;
-    margin-right: 20%;
-    margin-left: 30%;
-}
 /*******COMMON CUSTOM CLASSES*******/
 .horizontal-division {
     width : 100%;
@@ -126,6 +119,14 @@ a:checked, .btn-link:checked {
 }
 /*******COMMON CUSTOM CLASSES*******/
 
+/*******PROFILE CLASSES*******/
+#modification-form {
+    margin-top: 3rem;
+    margin-right: 20%;
+    margin-left: 20%;
+}
+/*******PROFILE CLASSES*******/
+
 /*******CONNEXION CLASSES*******/
 #connexion-form {
     margin-top: 5rem;
@@ -160,6 +161,14 @@ a:checked, .btn-link:checked {
         margin-left: 14%;
     }
     /*******REGISTRATION CLASSES TABLET*******/
+
+    /*******PROFILE CLASSES TABLET*******/
+    #modification-form {
+        margin-top: 1rem;
+        margin-right: 8%;
+        margin-left: 8%;
+    }
+    /*******PROFILE CLASSES TABLET*******/
 }
 
 @media (max-width: 641px) {
@@ -177,18 +186,26 @@ a:checked, .btn-link:checked {
     /*******CONNEXION CLASSES MOBILE*******/
     #connexion-form {
         margin-top: 2rem;
-        margin-right: 0;
-        margin-left: 0;
+        margin-right: 0px;
+        margin-left: 0px;
     }
     /*******CONNEXION CLASSES MOBILE*******/
 
     /*******REGISTRATION CLASSES MOBILE*******/
     #registration-form {
-        margin-top: 0;
-        margin-right: 0;
-        margin-left: 0;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
     }
     /*******REGISTRATION CLASSES MOBILE*******/
+
+    /*******PROFILE CLASSES MOBILE*******/
+    #modification-form {
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+    /*******PROFILE CLASSES MOBILE*******/
 }
 
 @media (max-width: 350px) {

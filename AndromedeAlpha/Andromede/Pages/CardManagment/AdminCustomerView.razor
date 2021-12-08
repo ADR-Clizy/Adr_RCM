@@ -1,4 +1,11 @@
-﻿@page "/CardManagment/AdminCustomerView/Cards/{RestorerId:int}"
+﻿@*
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@page "/CardManagment/AdminCustomerView/Cards/{RestorerId:int}"
 @inherits OwningComponentBase
 
 <AuthorizeView>
@@ -54,7 +61,7 @@
 
     bool isRestorerSubscribed()
     {
-        if(_currentRestorer != null)
+        if (_currentRestorer != null)
         {
             return _currentRestorer.Subscribed;
         }

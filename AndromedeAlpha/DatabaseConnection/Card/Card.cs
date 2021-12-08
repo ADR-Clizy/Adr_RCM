@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
 using System.ComponentModel.DataAnnotations;
 
 namespace DatabaseConnection
@@ -13,7 +15,7 @@ namespace DatabaseConnection
         public int CardId { get; set; }
 
         [Required(ErrorMessage = "Champ requis")]
-        [MaxLength(40, ErrorMessage = "Champ trop long")]
+        [MaxLength(40, ErrorMessage = "40 caractères maximum")]
         public string CardName { get; set; }
 
         public int RestorerId { get; set; }

@@ -1,6 +1,6 @@
 ﻿@*
     *
-    * (c) 2021-2021 Copyright Andromede
+    * (c) 2021 Copyright Andromede
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
@@ -13,7 +13,7 @@
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetCurrentRestorer() != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
+        @if (_currentRestorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
         <div class="top-row centered-title">
             <img class="small centered-image" src="img/andromede_white_bg.png" />
@@ -87,11 +87,6 @@
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
         _currentRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
-    }
-
-    Restorer GetCurrentRestorer()
-    {
-        return _currentRestorer;
     }
 
     bool isRestorerSubscribed()

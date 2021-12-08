@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using System;
 using System.IO;

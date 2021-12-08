@@ -1,4 +1,11 @@
-﻿using DatabaseConnection;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+using DatabaseConnection;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;

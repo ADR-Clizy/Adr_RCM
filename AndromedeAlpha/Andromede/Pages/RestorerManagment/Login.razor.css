@@ -1,6 +1,13 @@
-﻿#password-eye-connexion {
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+#password-eye-connexion {
     width: 3rem;
-    margin-top: 43%;
+    margin-top: 30px;
 }
 
 .subform-connexion-link {
@@ -9,7 +16,7 @@
 
 @media (max-width: 1048px) {
     .subform-connexion-link {
-        margin-left: 20%;
+        margin-left: 22%;
     }
 }
 

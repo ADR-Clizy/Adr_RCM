@@ -1,16 +1,9 @@
-﻿@*<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        
-    </Found>
-    <NotFound>
-        <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <Andromede.Pages.NotAuthorizedViewer />
-            </LayoutView>
-        </CascadingAuthenticationState>
-    </NotFound>
-</Router>*@
+﻿@*
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
 
 <CascadingAuthenticationState>
     <CascadingBlazoredModal>

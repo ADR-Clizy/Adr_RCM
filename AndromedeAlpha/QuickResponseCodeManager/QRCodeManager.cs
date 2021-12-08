@@ -1,6 +1,6 @@
 ﻿/*
 *
-* (c) 2021-2021 Copyright Andromede
+* (c) 2021 Copyright Andromede
 * Unauthorized use and disclosure strictly forbidden
 *
 */
@@ -8,7 +8,6 @@
 using QRCoder;
 using System.Drawing;
 using System.IO;
-
 
 namespace QuickResponseCodeManager
 {

@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+*
+* (c) 2021 Copyright Andromede
+* Unauthorized use and disclosure strictly forbidden
+*
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
