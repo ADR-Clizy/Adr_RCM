@@ -11,24 +11,27 @@
 @inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
 @inherits OwningComponentBase
 @using Andromede.Pages.Modals
+@using DatabaseConnection.RestorerModels
 
 @page "/RestorerManagment/Login"
 
 <div class="top-row px-2 centered-title ">
     <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
-    <EditForm Model="@_restorer" OnValidSubmit="@RestorerConnection" id="connexion-form">
+    <EditForm Model="@_restorerLogin" OnValidSubmit="@RestorerConnection" id="connexion-form">
+        <DataAnnotationsValidator/>
         <div class="form-row">
             <div class="form-group col-sm-10">
                 <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
-                <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorer.EmailAddress" />
-                <ValidationMessage For="@(() => _restorer.EmailAddress)" />
+                <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorerLogin.EmailAddress" />
+                <ValidationMessage For="@(() => _restorerLogin.EmailAddress)"/>
             </div>
             <div class="col-sm-2"></div>
         </div>
         <div class="form-row">
             <div class="form-group col-sm-10">
                 <label for="userPassword"><span class="oi oi-key form-icon"></span>Mot de passe</label>
-                <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorer.Password" />
+                <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorerLogin.Password" />
+                <ValidationMessage For="@(() => _restorerLogin.Password)" />
             </div>
             <div class="form-group col-sm-2">
                 <img id="password-eye-connexion" src="img/ico/password_eye.png" @onclick="ShowPassword" />
@@ -51,7 +54,7 @@
     </EditForm>
 </div>
 <div>
-    <a href="/RestorerManagment/Login" @onclick="ResetPassword" class="subform-connexion-link">Mot de passe oublié ?</a>
+    <a href="/RestorerManagment/Login" @onclick="AskForNewPassword" class="subform-connexion-link">Mot de passe oublié ?</a>
 </div>
 <div>
     <a href="RestorerManagment/Registration" class="subform-connexion-link">Pas encore inscrit ?</a>
@@ -63,7 +66,7 @@
     private string _inputType;
     private bool _isLoading;
 
-    private Restorer _restorer;
+    private RestorerLogin _restorerLogin;
     private Restorer _storedRestorer;
 
     public IRestorerRepository _restorerRepository { get; set; }
@@ -73,14 +76,14 @@
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
         _inputType = "password";
         _isLoading = false;
-        _restorer = new Restorer();
+        _restorerLogin = new RestorerLogin();
         _storedRestorer = new Restorer();
     }
 
     async Task RestorerConnection()
     {
         _isLoading = true;
-        _storedRestorer = _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress);
+        _storedRestorer = _restorerRepository.GetRestorerWithEmailAddress(_restorerLogin.EmailAddress);
         if (isRestorerExisting() && isPasswordCorrect())
         {
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.RestorerId);
@@ -110,7 +113,7 @@
 
     bool isPasswordCorrect()
     {
-        return BCryptNet.Verify(_restorer.Password, _storedRestorer.Password);
+        return BCryptNet.Verify(_restorerLogin.Password, _storedRestorer.Password);
     }
 
 
@@ -122,8 +125,8 @@
             _inputType = "password";
     }
 
-    void ResetPassword()
+    void AskForNewPassword()
     {
-        Modal.Show<ResetPassword>($"Réinitialiser le mot de passe");
+        Modal.Show<AskForNewPassword>($"Réinitialiser le mot de passe");
     }
 }

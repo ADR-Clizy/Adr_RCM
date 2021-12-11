@@ -77,9 +77,9 @@
                 </div>
                 <div class="form-row top-divider">
                     <div class="form-group col-sm-12">
-                        <button type="submit" class="btn btn-andromede">Modifier</button>
+                        <button type="submit" class="btn btn-andromede">Actualiser</button>
                         <p id="existingAccount" class="form-alert form-text">@_errorMessage</p>
-                        <h6 class="top-divider validation-message">@_modificationState</h6>
+                        <h6 class="top-divider green-message">@_modificationState</h6>
                         @if (_isLoading)
                         {
                             <div class="spinner-border text-andromede" role="status">
@@ -93,7 +93,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h6><strong>Vous voulez modifier votre mot de passe ?</strong></h6>
-                    <button @onclick="@(() => AskForPasswordReset())" class="btn btn-andromede top-divider">Modifier mon mot de passe</button>
+                    <button @onclick="@(() => AskForNewPasswordFromProfile())" class="btn btn-andromede top-divider">Modifier mon mot de passe</button>
                 </div>
                 <div class="col-sm-6">
                     <h6><strong>Vous voulez supprimer votre compte ?</strong></h6>
@@ -177,10 +177,14 @@
                && _modifiedRestorer.RestaurantSiretNumber != _originalRestaurantSiretNumber;
     }
 
-    void AskForPasswordReset()
+    void AskForNewPasswordFromProfile()
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Restorer.RestorerId), _modifiedRestorer.RestorerId);
-        Modal.Show<ResetPasswordFromProfile>($"Voulez vous réinitialiser votre mot de passe ?", aParameters);
+        var aOptions = new ModalOptions()
+        {
+            HideCloseButton = true
+        };
+        Modal.Show<AskForNewPasswordFromProfile>($"Voulez vous réinitialiser votre mot de passe ?", aParameters, aOptions);
     }
 }

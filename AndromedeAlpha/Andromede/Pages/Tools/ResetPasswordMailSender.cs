@@ -46,7 +46,7 @@ namespace Andromede.Pages.Tools
             {
                 ResetPasswordLink = aNewPasswordLink,
                 RestaurantName = iRestorer.RestaurantName,
-                EndGuidTime = iRestorerClaim.EndOfGUID.Hour + "H" + iRestorerClaim.EndOfGUID.Minute
+                EndGuidTime = iRestorerClaim.EndOfGUID.ToString("dd/MM/yyyy") + ", " + iRestorerClaim.EndOfGUID.ToString("HH") + "H" + iRestorerClaim.EndOfGUID.ToString("mm")
             };
             aMail.SetTemplateData(aTemplateData);
             await aClient.SendEmailAsync(aMail);

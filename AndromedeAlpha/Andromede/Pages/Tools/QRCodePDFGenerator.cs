@@ -19,16 +19,16 @@ namespace Andromede.Pages.Tools
     {
         public static byte[] GenerateNormalQRCodePdf(string iLink)
         {
-            int anInitialHeight = 75;
-            int aMaximalHeight = 750;
-            int aShiftHeight = 125;
+            int anInitialHeight = 120;
+            int aMaximalHeight = 780;
+            int aShiftHeight = 140;
             int anInitialWidth = 40;
             int aMaximalWidth = 430;
             int aShiftWidth = 130;
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            MemoryStream aQRCodeStream = new MemoryStream(QRCodeManager.GenerateQRCode(iLink, 5));
+            MemoryStream aQRCodeStream = new MemoryStream(QRCodeManager.GenerateQRCode(iLink, 10));
 
             Image aQRCodeToResize = Image.FromStream(aQRCodeStream);
             XImage aQRCodeAsXImage = XImage.FromStream(ResizeImage(aQRCodeToResize, 175, 175));
@@ -39,7 +39,7 @@ namespace Andromede.Pages.Tools
 
             XGraphics aGfx = XGraphics.FromPdfPage(aPage);
 
-            aGfx.DrawImage(aLogoAsXImage, new XPoint(100, 0));
+            aGfx.DrawImage(aLogoAsXImage, new XPoint(115, 0));
 
             for (int aHeight = anInitialHeight; aHeight < aMaximalHeight; aHeight += aShiftHeight)
             {

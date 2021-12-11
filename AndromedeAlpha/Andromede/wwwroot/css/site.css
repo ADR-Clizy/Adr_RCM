@@ -47,6 +47,10 @@ a:checked, .btn-link:checked {
 }
 
 .validation-message {
+    color: red;
+}
+
+.green-message {
     color: green;
 }
 

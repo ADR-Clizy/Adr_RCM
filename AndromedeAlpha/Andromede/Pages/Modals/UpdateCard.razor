@@ -141,7 +141,7 @@
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
-            catch (Exception e)
+            catch
             {
                 _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
             }

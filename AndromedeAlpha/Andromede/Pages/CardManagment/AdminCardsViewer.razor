@@ -105,12 +105,12 @@
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.CardId), iCardId);
-        var aOptions = new ModalOptions()
+        var anOptions = new ModalOptions()
         {
             HideCloseButton = true,
             Animation = ModalAnimation.FadeInOut(0.5)
         };
-        Modal.Show<DeleteCard>($"Supprimer : {iCardName}", aParameters, aOptions);
+        Modal.Show<DeleteCard>($"Supprimer : {iCardName}", aParameters, anOptions);
     }
 
     void UpdateCurrentCard(int iCardId, string iCardName)

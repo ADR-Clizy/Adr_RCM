@@ -39,7 +39,12 @@
                     </div>
                 </div>
 
-                <button class="btn btn-andromede" @onclick="SendQRCodeMail">Recevoir mes codes</button>
+                <button class="btn btn-andromede top-divider" @onclick="SendQRCodeMail">Recevoir mes codes</button>
+
+                @if(_isCodeSended)
+                 {
+                        <h6 class="green-message top-divider">Le mail a été correctement envoyé. Vérifiez bien vos spams.</h6>
+                 }
             </div>
         }
         else
@@ -57,10 +62,13 @@
 
     private IRestorerRepository _restorerRepository;
 
+    private bool _isCodeSended;
+
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
         _currentRestorer = new Restorer();
+        _isCodeSended = false;
     }
 
     Restorer GetCurrentRestorer(string iId)
@@ -71,6 +79,7 @@
 
     async Task SendQRCodeMail()
     {
+        _isCodeSended = true;
         await QRCodeMailSender.SendMail(_currentRestorer, Configuration.GetValue<string>("DomainName"));
     }
 }
