@@ -13,23 +13,26 @@
 @inject IRestorerRepository RestorerRepository
 
 @using Andromede.Pages.Modals
+@using DatabaseConnection.RestorerModels 
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (_modifiedRestorer != null)
+        @if (_restorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name))
         {
             <div class="top-row px-2 centered-title">
                 <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
                 <h5>Vous pouvez modifier vos informations si nécessaire</h5>
-                <EditForm Model="@_modifiedRestorer" OnValidSubmit="@RestorerModified" id="modification-form">
+                <EditForm Model="@_restorerProfile" OnValidSubmit="@RestorerModified" id="modification-form">
+                    <DataAnnotationsValidator/>
                     <div class="form-row">
                         <div class="form-group col-sm-12">
                             <label for="userSiretNumber">
                                 <span class="oi oi-list form-icon"></span>
                                 Numéro de SIRET
                             </label>
-                            <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_modifiedRestorer.RestaurantSiretNumber" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.RestaurantSiretNumber)" />
+                            <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_restorerProfile.RestaurantSiretNumber" />
+                            <ValidationMessage For="@(() => _restorerProfile.RestaurantSiretNumber)" />
+                            <p id="existingAccount" class="form-alert form-text">@_restaurantSiretNumberErrorMessage</p>
                         </div>
                     </div>
                     <div class="form-row">
@@ -38,8 +41,8 @@
                                 <img class="form-img" src="img/ico/fork_spoon.png" />
                                 Nom du restaurant
                             </label>
-                            <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_modifiedRestorer.RestaurantName" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.RestaurantName)" />
+                            <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_restorerProfile.RestaurantName" />
+                            <ValidationMessage For="@(() => _restorerProfile.RestaurantName)" />
                         </div>
                     </div>
                     <div class="form-row">
@@ -48,16 +51,16 @@
                                 <span class="oi oi-person form-icon"></span>
                                 Prénom
                             </label>
-                            <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_modifiedRestorer.FirstName" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.FirstName)" />
+                            <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_restorerProfile.FirstName" />
+                            <ValidationMessage For="@(() => _restorerProfile.FirstName)" />
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="userLastName">
                                 <span class="oi oi-person form-icon"></span>
                                 Nom de famille
                             </label>
-                            <InputText type="text" class="form-control" id="userLastName" @bind-Value="_modifiedRestorer.LastName" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.LastName)" />
+                            <InputText type="text" class="form-control" id="userLastName" @bind-Value="_restorerProfile.LastName" />
+                            <ValidationMessage For="@(() => _restorerProfile.LastName)" />
                         </div>
                     </div>
                     <div class="form-row">
@@ -66,16 +69,16 @@
                                 <img class="form-img" src="img/ico/mail.png">
                                 Addresse mail
                             </label>
-                            <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_modifiedRestorer.EmailAddress" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.EmailAddress)" />
+                            <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorerProfile.EmailAddress" />
+                            <ValidationMessage For="@(() => _restorerProfile.EmailAddress)" />
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="userPhoneNumber">
                                 <span class="oi oi-phone form-icon"></span>
                                 Numéro de téléphone
                             </label>
-                            <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_modifiedRestorer.PhoneNumber" />
-                            <ValidationMessage For="@(() => _modifiedRestorer.PhoneNumber)" />
+                            <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_restorerProfile.PhoneNumber" />
+                            <ValidationMessage For="@(() => _restorerProfile.PhoneNumber)" />
                         </div>
                     </div>
                     <div class="form-row top-divider">
@@ -116,24 +119,23 @@
     [Parameter]
     public int RestorerId { get; set; }
 
-    private Restorer _modifiedRestorer;
-
-    private string _originalEmailAddress;
-    private string _originalRestaurantSiretNumber;
+    private Restorer _restorer;
+    private RestorerProfile _restorerProfile;
 
     private string _modificationState;
     private string _errorMessage;
+    private string _restaurantSiretNumberErrorMessage;
 
     private bool _isLoading;
 
     protected override void OnInitialized()
     {
         _isLoading = false;
-        _modifiedRestorer = RestorerRepository.GetRestorerWithId(RestorerId);
-        if (_modifiedRestorer != null)
+        _restorerProfile = new RestorerProfile();
+        _restorer = RestorerRepository.GetRestorerWithId(RestorerId);
+        if (_restorer != null)
         {
-            _originalEmailAddress = _modifiedRestorer.EmailAddress;
-            _originalRestaurantSiretNumber = _modifiedRestorer.RestaurantSiretNumber;
+            CopyRestorerData();
         }
     }
 
@@ -142,49 +144,88 @@
         _isLoading = true;
         _modificationState = "";
         _errorMessage = "";
+        _restaurantSiretNumberErrorMessage = "";
 
+        if (isRestaurantSiretNumberTooShort())
+        {
+            _restaurantSiretNumberErrorMessage = "Champs trop court, 14 numéros";
+            _isLoading = false;
+            return;
+        }
+        else if (isRestaurantSiretNumberTooLong())
+        {
+            _restaurantSiretNumberErrorMessage = "Champs trop long, 14 numéros";
+            _isLoading = false;
+            return;
+        }
         if (isAddressMailExisting())
         {
             _errorMessage = "Un compte avec cette adresse mail existe déjà";
-            _modifiedRestorer.EmailAddress = _originalEmailAddress;
             _isLoading = false;
             return;
         }
         if (isRestaurantSiretNumberExisting())
         {
             _errorMessage = "Un compte avec ce numéro de SIRET existe déjà";
-            _modifiedRestorer.RestaurantSiretNumber = _originalRestaurantSiretNumber;
             _isLoading = false;
             return;
         }
-
-        RestorerRepository.UpdateProfile(_modifiedRestorer);
-        _originalEmailAddress = _modifiedRestorer.EmailAddress;
-        _originalRestaurantSiretNumber = _modifiedRestorer.RestaurantSiretNumber;
+        CopyRestorerProfileData();
+        RestorerRepository.UpdateProfile(_restorer);
         _modificationState = "Les modifications ont été correctement effectuées";
         _isLoading = false;
     }
 
+    bool isRestaurantSiretNumberTooShort()
+    {
+        return _restorerProfile.RestaurantSiretNumber.Length < 14 && _restorerProfile.RestaurantSiretNumber != "";
+    }
+
+    bool isRestaurantSiretNumberTooLong()
+    {
+        return _restorerProfile.RestaurantSiretNumber.Length > 14;
+    }
+
     bool isAddressMailExisting()
     {
-        return RestorerRepository.GetRestorerWithEmailAddress(_modifiedRestorer.EmailAddress) != null
-               && _modifiedRestorer.EmailAddress != _originalEmailAddress;
+        Restorer aRestorer = RestorerRepository.GetRestorerWithEmailAddress(_restorerProfile.EmailAddress);
+        return aRestorer != null && aRestorer != _restorer;
     }
 
     bool isRestaurantSiretNumberExisting()
     {
-        return RestorerRepository.GetRestorerWithRestaurantSiretNumber(_modifiedRestorer.RestaurantSiretNumber) != null
-               && _modifiedRestorer.RestaurantSiretNumber != _originalRestaurantSiretNumber;
+        Restorer aRestorer = RestorerRepository.GetRestorerWithRestaurantSiretNumber(_restorerProfile.RestaurantSiretNumber);
+        return aRestorer != null && aRestorer != _restorer;
     }
 
     void AskForNewPasswordFromProfile()
     {
         var aParameters = new ModalParameters();
-        aParameters.Add(nameof(Restorer), _modifiedRestorer);
+        aParameters.Add(nameof(Restorer), _restorer);
         var aOptions = new ModalOptions()
         {
             HideCloseButton = true
         };
         Modal.Show<AskForNewPasswordFromProfile>($"Voulez vous réinitialiser votre mot de passe ?", aParameters, aOptions);
+    }
+
+    void CopyRestorerData()
+    {
+        _restorerProfile.RestaurantSiretNumber = _restorer.RestaurantSiretNumber;
+        _restorerProfile.RestaurantName = _restorer.RestaurantName;
+        _restorerProfile.FirstName = _restorer.FirstName;
+        _restorerProfile.LastName = _restorer.LastName;
+        _restorerProfile.EmailAddress = _restorer.EmailAddress;
+        _restorerProfile.PhoneNumber = _restorer.PhoneNumber;
+    }
+
+    void CopyRestorerProfileData()
+    {
+        _restorer.RestaurantSiretNumber = _restorerProfile.RestaurantSiretNumber;
+        _restorer.RestaurantName = _restorerProfile.RestaurantName;
+        _restorer.FirstName = _restorerProfile.FirstName;
+        _restorer.LastName = _restorerProfile.LastName;
+        _restorer.EmailAddress = _restorerProfile.EmailAddress;
+        _restorer.PhoneNumber = _restorerProfile.PhoneNumber;
     }
 }
