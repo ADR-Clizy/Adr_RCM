@@ -7,7 +7,10 @@
 
 @page "/CardManagment/Customer/Cards/{RestorerId:int}"
 
+@using Microsoft.Extensions.Configuration
 @inherits OwningComponentBase
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
 @if (GetCurrentRestorer() != null)
 {
     <div class="top-row centered-title">
@@ -22,7 +25,7 @@
             <div class="row">
                 <div class="col-2"></div>
                 <div class="col-8">
-                    <a class="btn btn-andromede" href=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                    <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
                 </div>
                 <div class="col-2"></div>
             </div>

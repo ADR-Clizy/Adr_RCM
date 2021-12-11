@@ -5,8 +5,10 @@
     *
 *@
 
+@using Microsoft.Extensions.Configuration
 @page "/CardManagment/AdminCustomerView/Cards/{RestorerId:int}"
 @inherits OwningComponentBase
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 <AuthorizeView>
     <Authorized Context="_authContext">
@@ -24,7 +26,7 @@
                     <div class="row">
                         <div class="col-2"></div>
                         <div class="col-8">
-                            <a class="btn btn-andromede" href=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                            <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
                         </div>
                         <div class="col-2"></div>
                     </div>

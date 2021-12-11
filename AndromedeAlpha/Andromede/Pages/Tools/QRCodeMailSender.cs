@@ -23,15 +23,14 @@ namespace Andromede.Pages.Tools
 
     public class QRCodeMailSender
     {
-        public static async Task SendMail(Restorer iRestorer)
+        public static async Task SendMail(Restorer iRestorer, string iDomainName)
         {
             string anApiKey = Environment.GetEnvironmentVariable("ANDROMEDE_MAILING_SYSTEM");
             SendGridClient aClient = new SendGridClient(anApiKey);
             EmailAddress aFromMail = new EmailAddress("adr.clizy@outlook.fr", "Andromede Services");
             var aToMail = new EmailAddress(iRestorer.EmailAddress, iRestorer.RestaurantName);
             var aMail = new SendGridMessage();
-            var aDomainName = "https://localhost:5001";
-            var aQRCodeLink = aDomainName + $"/CardManagment/Customer/Cards/{iRestorer.RestorerId}";
+            var aQRCodeLink = iDomainName + $"/CardManagment/Customer/Cards/{iRestorer.RestorerId}";
             AddPDFAttachment(aMail, aQRCodeLink); 
             AddPNGAttachment(aMail, aQRCodeLink);
             aMail.SetFrom(aFromMail);

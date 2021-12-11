@@ -28,15 +28,14 @@ namespace Andromede.Pages.Tools
 
     public static class ResetPasswordMailSender
     {
-        public static async Task SendMail(RestorerClaim iRestorerClaim, Restorer iRestorer)
+        public static async Task SendMail(RestorerClaim iRestorerClaim, Restorer iRestorer, string iDomainName)
         {
             string anApiKey = Environment.GetEnvironmentVariable("ANDROMEDE_MAILING_SYSTEM");
             SendGridClient aClient = new SendGridClient(anApiKey);
             EmailAddress aFromMail = new EmailAddress("adr.clizy@outlook.fr", "Andromede Services");
             string aSubject = "Reinitialisation du mot de passe";
             var aToMail = new EmailAddress(iRestorer.EmailAddress, iRestorer.RestaurantName);
-            string aDomainName = "https://localhost:5001";
-            string aNewPasswordLink = aDomainName + $"/RestorerManagment/NewPassword/{iRestorerClaim.ClaimGUID}";
+            string aNewPasswordLink = iDomainName + $"/RestorerManagment/NewPassword/{iRestorerClaim.ClaimGUID}";
             var aMail = new SendGridMessage();
             aMail.SetFrom(aFromMail);
             aMail.AddTo(aToMail);

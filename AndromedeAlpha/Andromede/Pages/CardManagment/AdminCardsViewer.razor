@@ -5,64 +5,67 @@
     *
 *@
 
+
 @page "/CardManagment/Restorer/Cards/{RestorerId:int}"
 @inject NavigationManager NavManager
 @inject IModalService Modal
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @inherits OwningComponentBase
 @using Andromede.Pages.Modals
+@using Microsoft.Extensions.Configuration
 
 <AuthorizeView>
     <Authorized Context="_authContext">
         @if (_currentRestorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
-        <div class="top-row centered-title">
-            <img class="small centered-image" src="img/andromede_white_bg.png" />
-            <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
-            <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
-            <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
-            @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
-            {
-                <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
-                <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
-                <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
-            }
-            @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
-            {
-                <div class="row">
-                    <div class="col-2"></div>
-                    <div class="col-8">
-                        <div class="horizontal-division"></div>
+            <div class="top-row centered-title">
+                <img class="small centered-image" src="img/andromede_white_bg.png" />
+                <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
+                <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
+                <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
+                @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+                {
+                    <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
+                    <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
+                    <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
+                }
+                @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
+                {
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <div class="horizontal-division"></div>
+                        </div>
+                        <div class="col-2"></div>
                     </div>
-                    <div class="col-2"></div>
-                </div>
-                <div class="row top-divider">
-                    <div class="col-sm-4"></div>
-                    <div class="col-sm-4">
-                        <h3><strong>@aCard.CardName</strong></h3>
+                    <div class="row top-divider">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <h3><strong>@aCard.CardName</strong></h3>
+                        </div>
+                        <div class="col-sm-4"></div>
                     </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="row">
-                    <div class="col-2"></div>
-                    <div class="col-8">
-                        <iframe src=@($"https://localhost:5001/Customer/Cards/{aCard.CardId}.pdf") class="pdf-card-viewer" type='application/pdf' />
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <iframe src=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") class="pdf-card-viewer" type='application/pdf' />
+                        </div>
+                        <div class="col-2"></div>
                     </div>
-                    <div class="col-2"></div>
-                </div>
-                <div class="row bottom-divider">
-                    <div class="col-4">
-                        <span @onclick="@(() => UpdateCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
+                    <div class="row bottom-divider">
+                        <div class="col-4">
+                            <span @onclick="@(() => UpdateCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
+                        </div>
+                        <div class="col-4">
+                            <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
+                        </div>
+                        <div class="col-4">
+                            <span @onclick="@(() => DeleteCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-trash card-management-button"></span>
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
-                    </div>
-                    <div class="col-4">
-                        <span @onclick="@(() => DeleteCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-trash card-management-button"></span>
-                    </div>
-                </div>
 
-            }
-        </div>
+                }
+            </div>
         }
         else
         {
@@ -91,7 +94,7 @@
 
     bool isRestorerSubscribed()
     {
-        if(_currentRestorer != null)
+        if (_currentRestorer != null)
         {
             return _currentRestorer.Subscribed;
         }

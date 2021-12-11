@@ -5,9 +5,12 @@
     *
 *@
 
+
 @inject NavigationManager NavManager
 @inherits OwningComponentBase
-@using Tools;
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@using Tools
+@using Microsoft.Extensions.Configuration
 
 @page "/CardManagment/CardsQRCode"
 
@@ -26,7 +29,7 @@
                     <div class="col-12">
                         <img width="350" src="@String.Format("data:image/png;base64,{0}",
                                                Convert.ToBase64String(QRCodeManager.GenerateQRCode
-                                                                     ($"https://localhost:5001/CardManagment/Customer/Cards/{_authContext.User.Identity.Name}"
+                                                                     (Configuration.GetValue<string>("DomainName") + $"/CardManagment/Customer/Cards/{_authContext.User.Identity.Name}"
                                                                       ,10)))" />
                     </div>
                 </div>
@@ -68,6 +71,6 @@
 
     async Task SendQRCodeMail()
     {
-        await QRCodeMailSender.SendMail(_currentRestorer);
+        await QRCodeMailSender.SendMail(_currentRestorer, Configuration.GetValue<string>("DomainName"));
     }
 }

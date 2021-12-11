@@ -71,7 +71,6 @@
     protected override void OnInitialized()
     {
         _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _errorOccurred = "";
         _inputType = "password";
         _isLoading = false;
         _restorer = new Restorer();
