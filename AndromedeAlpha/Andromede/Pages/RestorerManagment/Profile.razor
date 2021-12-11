@@ -5,102 +5,105 @@
     *
 *@
 
+@page "/RestorerManagment/Profile/{RestorerId:int}"
+
 @inject NavigationManager NavManager
 @inherits OwningComponentBase
 @inject IModalService Modal
-@page "/RestorerManagment/Profile/{RestorerId:int}"
+@inject IRestorerRepository RestorerRepository
+
 @using Andromede.Pages.Modals
 
 <AuthorizeView>
     <Authorized Context="_authContext">
         @if (_modifiedRestorer != null)
         {
-        <div class="top-row px-2 centered-title">
-            <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
-            <h5>Vous pouvez modifier vos informations si nécessaire</h5>
-            <EditForm Model="@_modifiedRestorer" OnValidSubmit="@RestorerModified" id="modification-form">
-                <div class="form-row">
-                    <div class="form-group col-sm-12">
-                        <label for="userSiretNumber">
-                            <span class="oi oi-list form-icon"></span>
-                            Numéro de SIRET
-                        </label>
-                        <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_modifiedRestorer.RestaurantSiretNumber" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.RestaurantSiretNumber)" />
+            <div class="top-row px-2 centered-title">
+                <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
+                <h5>Vous pouvez modifier vos informations si nécessaire</h5>
+                <EditForm Model="@_modifiedRestorer" OnValidSubmit="@RestorerModified" id="modification-form">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="userSiretNumber">
+                                <span class="oi oi-list form-icon"></span>
+                                Numéro de SIRET
+                            </label>
+                            <InputText type="text" class="form-control" id="userSiretNumber" @bind-Value="_modifiedRestorer.RestaurantSiretNumber" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.RestaurantSiretNumber)" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-sm-12">
-                        <label for="restaurantName">
-                            <img class="form-img" src="img/ico/fork_spoon.png" />
-                            Nom du restaurant
-                        </label>
-                        <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_modifiedRestorer.RestaurantName" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.RestaurantName)" />
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="restaurantName">
+                                <img class="form-img" src="img/ico/fork_spoon.png" />
+                                Nom du restaurant
+                            </label>
+                            <InputText type="text" class="form-control" id="restaurantName" @bind-Value="_modifiedRestorer.RestaurantName" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.RestaurantName)" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-sm-6">
-                        <label for="userFirstName">
-                            <span class="oi oi-person form-icon"></span>
-                            Prénom
-                        </label>
-                        <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_modifiedRestorer.FirstName" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.FirstName)" />
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="userFirstName">
+                                <span class="oi oi-person form-icon"></span>
+                                Prénom
+                            </label>
+                            <InputText type="text" class="form-control" id="userFirstName" @bind-Value="_modifiedRestorer.FirstName" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.FirstName)" />
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="userLastName">
+                                <span class="oi oi-person form-icon"></span>
+                                Nom de famille
+                            </label>
+                            <InputText type="text" class="form-control" id="userLastName" @bind-Value="_modifiedRestorer.LastName" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.LastName)" />
+                        </div>
                     </div>
-                    <div class="form-group col-sm-6">
-                        <label for="userLastName">
-                            <span class="oi oi-person form-icon"></span>
-                            Nom de famille
-                        </label>
-                        <InputText type="text" class="form-control" id="userLastName" @bind-Value="_modifiedRestorer.LastName" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.LastName)" />
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="userEmail">
+                                <img class="form-img" src="img/ico/mail.png">
+                                Addresse mail
+                            </label>
+                            <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_modifiedRestorer.EmailAddress" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.EmailAddress)" />
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="userPhoneNumber">
+                                <span class="oi oi-phone form-icon"></span>
+                                Numéro de téléphone
+                            </label>
+                            <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_modifiedRestorer.PhoneNumber" />
+                            <ValidationMessage For="@(() => _modifiedRestorer.PhoneNumber)" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-sm-6">
-                        <label for="userEmail">
-                            <img class="form-img" src="img/ico/mail.png">
-                            Addresse mail
-                        </label>
-                        <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_modifiedRestorer.EmailAddress" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.EmailAddress)" />
+                    <div class="form-row top-divider">
+                        <div class="form-group col-sm-12">
+                            <button type="submit" class="btn btn-andromede">Actualiser</button>
+                            <p id="existingAccount" class="form-alert form-text">@_errorMessage</p>
+                            <h6 class="top-divider green-message">@_modificationState</h6>
+                            @if (_isLoading)
+                            {
+                                <div class="spinner-border text-andromede" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            }
+                        </div>
                     </div>
-                    <div class="form-group col-sm-6">
-                        <label for="userPhoneNumber">
-                            <span class="oi oi-phone form-icon"></span>
-                            Numéro de téléphone
-                        </label>
-                        <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_modifiedRestorer.PhoneNumber" />
-                        <ValidationMessage For="@(() => _modifiedRestorer.PhoneNumber)" />
+                </EditForm>
+                <div class="horizontal-division bottom-divider"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h6><strong>Vous voulez modifier votre mot de passe ?</strong></h6>
+                        <button @onclick="@(() => AskForNewPasswordFromProfile())" class="btn btn-andromede top-divider">Modifier mon mot de passe</button>
                     </div>
-                </div>
-                <div class="form-row top-divider">
-                    <div class="form-group col-sm-12">
-                        <button type="submit" class="btn btn-andromede">Actualiser</button>
-                        <p id="existingAccount" class="form-alert form-text">@_errorMessage</p>
-                        <h6 class="top-divider green-message">@_modificationState</h6>
-                        @if (_isLoading)
-                        {
-                            <div class="spinner-border text-andromede" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
-                        }
+                    <div class="col-sm-6">
+                        <h6><strong>Vous voulez supprimer votre compte ?</strong></h6>
+                        <button class="btn btn-andromede top-divider">Supprimer mon compte</button>
                     </div>
-                </div>
-            </EditForm>
-            <div class="horizontal-division bottom-divider"></div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <h6><strong>Vous voulez modifier votre mot de passe ?</strong></h6>
-                    <button @onclick="@(() => AskForNewPasswordFromProfile())" class="btn btn-andromede top-divider">Modifier mon mot de passe</button>
-                </div>
-                <div class="col-sm-6">
-                    <h6><strong>Vous voulez supprimer votre compte ?</strong></h6>
-                    <button class="btn btn-andromede top-divider">Supprimer mon compte</button>
                 </div>
             </div>
-        </div>
         }
 
     </Authorized>
@@ -115,8 +118,6 @@
 
     private Restorer _modifiedRestorer;
 
-    private IRestorerRepository _restorerRepository;
-
     private string _originalEmailAddress;
     private string _originalRestaurantSiretNumber;
 
@@ -127,10 +128,9 @@
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
         _isLoading = false;
-        _modifiedRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
-        if(_modifiedRestorer != null)
+        _modifiedRestorer = RestorerRepository.GetRestorerWithId(RestorerId);
+        if (_modifiedRestorer != null)
         {
             _originalEmailAddress = _modifiedRestorer.EmailAddress;
             _originalRestaurantSiretNumber = _modifiedRestorer.RestaurantSiretNumber;
@@ -150,7 +150,7 @@
             _isLoading = false;
             return;
         }
-        if(isRestaurantSiretNumberExisting())
+        if (isRestaurantSiretNumberExisting())
         {
             _errorMessage = "Un compte avec ce numéro de SIRET existe déjà";
             _modifiedRestorer.RestaurantSiretNumber = _originalRestaurantSiretNumber;
@@ -158,7 +158,7 @@
             return;
         }
 
-        _restorerRepository.UpdateProfile(_modifiedRestorer);
+        RestorerRepository.UpdateProfile(_modifiedRestorer);
         _originalEmailAddress = _modifiedRestorer.EmailAddress;
         _originalRestaurantSiretNumber = _modifiedRestorer.RestaurantSiretNumber;
         _modificationState = "Les modifications ont été correctement effectuées";
@@ -167,20 +167,20 @@
 
     bool isAddressMailExisting()
     {
-        return _restorerRepository.GetRestorerWithEmailAddress(_modifiedRestorer.EmailAddress) != null
+        return RestorerRepository.GetRestorerWithEmailAddress(_modifiedRestorer.EmailAddress) != null
                && _modifiedRestorer.EmailAddress != _originalEmailAddress;
     }
 
     bool isRestaurantSiretNumberExisting()
     {
-        return _restorerRepository.GetRestorerWithRestaurantSiretNumber(_modifiedRestorer.RestaurantSiretNumber) != null
+        return RestorerRepository.GetRestorerWithRestaurantSiretNumber(_modifiedRestorer.RestaurantSiretNumber) != null
                && _modifiedRestorer.RestaurantSiretNumber != _originalRestaurantSiretNumber;
     }
 
     void AskForNewPasswordFromProfile()
     {
         var aParameters = new ModalParameters();
-        aParameters.Add(nameof(Restorer.RestorerId), _modifiedRestorer.RestorerId);
+        aParameters.Add(nameof(Restorer), _modifiedRestorer);
         var aOptions = new ModalOptions()
         {
             HideCloseButton = true

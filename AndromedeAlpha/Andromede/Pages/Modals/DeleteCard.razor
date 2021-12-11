@@ -7,6 +7,8 @@
 
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
+@inject ICardRepository CardRepository
+
 @inherits OwningComponentBase
 
 <div class="row">
@@ -28,27 +30,24 @@
 
     [Parameter] public int CardId { get; set; }
 
-    private Card _currentCard;
+    private Card _restorerCard;
     private string _filePath;
-
-    public ICardRepository _cardRepository { get; set; }
 
     protected override void OnInitialized()
     {
-        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
-        _currentCard = _cardRepository.GetCardWithId(CardId);
+        _restorerCard = CardRepository.GetCardWithId(CardId);
         _filePath = $"wwwroot/Customer/Cards/{CardId}.pdf";
     }
 
     async Task DeleteCurrentCard()
     {
-        _cardRepository.DeleteCard(CardId);
+        CardRepository.DeleteCard(CardId);
         if (System.IO.File.Exists(_filePath))
         {
             System.IO.File.Delete(_filePath);
         }
         NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
-        await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_currentCard));
+        await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_restorerCard));
     }
 
     async Task CloseDeleteCardModal()

@@ -7,31 +7,35 @@
 
 
 @page "/CardManagment/Restorer/Cards/{RestorerId:int}"
+
 @inject NavigationManager NavManager
 @inject IModalService Modal
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject IRestorerRepository RestorerRepository
+
 @inherits OwningComponentBase
+
 @using Andromede.Pages.Modals
 @using Microsoft.Extensions.Configuration
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (_currentRestorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
+        @if (_restorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
             <div class="top-row centered-title">
                 <img class="small centered-image" src="img/andromede_white_bg.png" />
-                <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
+                <h1 class="to-hide-for-mobile">@_restorer.RestaurantName</h1>
                 <h3 class="to-hide-for-mobile">Bienvenue dans la gestion des cartes</h3>
                 <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
-                @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+                @if (!RestorerRepository.GetCards(RestorerId).Any())
                 {
                     <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
                     <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
                     <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
                 }
-                @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
+                @foreach (Card aCard in RestorerRepository.GetCards(RestorerId))
                 {
-                    <div class="row">
+                    <div class="row" id="@aCard.CardName">
                         <div class="col-2"></div>
                         <div class="col-8">
                             <div class="horizontal-division"></div>
@@ -57,7 +61,7 @@
                             <span @onclick="@(() => UpdateCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-pencil card-management-button"></span>
                         </div>
                         <div class="col-4">
-                            <img src="img/ico/add_card.png" class="add-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
+                            <img src="img/ico/add_card.png" class="add-card-image" @onclick="UploadACard" />
                         </div>
                         <div class="col-4">
                             <span @onclick="@(() => DeleteCurrentCard(aCard.CardId, aCard.CardName))" class="oi oi-trash card-management-button"></span>
@@ -83,20 +87,18 @@
     [Parameter]
     public int RestorerId { get; set; }
 
-    private Restorer _currentRestorer;
-    private IRestorerRepository _restorerRepository;
+    private Restorer _restorer;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _currentRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
+        _restorer = RestorerRepository.GetRestorerWithId(RestorerId);
     }
 
     bool isRestorerSubscribed()
     {
-        if (_currentRestorer != null)
+        if (_restorer != null)
         {
-            return _currentRestorer.Subscribed;
+            return _restorer.Subscribed;
         }
         return false;
     }
@@ -117,7 +119,15 @@
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.CardId), iCardId);
+        aParameters.Add(nameof(Restorer), _restorer);
         Modal.Show<UpdateCard>($"Modifier : {iCardName}", aParameters);
+    }
+
+    void UploadACard()
+    {
+        var aParameters = new ModalParameters();
+        aParameters.Add(nameof(Restorer), _restorer);
+        Modal.Show<UploadCard>("Ajouter une carte", aParameters);
     }
 }
 

@@ -6,10 +6,13 @@
 *@
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
+@inject ICardRepository CardRepository
+
 @inherits OwningComponentBase
+
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetAuthRestorer(_authContext.User.Identity.Name) != null)
+        @if (Restorer != null)
         {
             <div class="top-row px-2 centered-title">
                 <img class="small centered-image bottom-divider to-hide-for-mobile" src="img/andromede_white_bg.png" />
@@ -17,13 +20,13 @@
                 <h6 class="bottom-divider">Format accepté</h6>
                 <img class="accepted-format-image centered-image" src="img/ico/pdf.png" />
             </div>
-            <EditForm Model="@_currentRestorerCard" OnValidSubmit="@CardAdded">
+            <EditForm Model="@_restorerCard" OnValidSubmit="@CardAdded">
                 <div class="form-row connexion-div">
                     <div class="form-group col-sm-2"></div>
                     <div class="form-group col-sm-8">
                         <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
-                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_currentRestorerCard.CardName" />
-                        <ValidationMessage For="@(() => _currentRestorerCard.CardName)" />
+                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_restorerCard.CardName" />
+                        <ValidationMessage For="@(() => _restorerCard.CardName)" />
                         <p style="color:red" class="top-divider">@_cardInfos</p>
                     </div>
                     <div class="form-group col-sm-2"></div>
@@ -63,12 +66,17 @@
 
 
 @code {
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public int CardId { get; set; }
+
+    [Parameter]
+    public Restorer Restorer { get; set; }
+
     private const int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private const int MAX_FILE_SIZE_MB = 10;
-
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-
-    [Parameter] public int CardId { get; set; }
 
     private string _fileInfos;
     private string _fileValidation;
@@ -79,27 +87,15 @@
 
     private IFileListEntry _fileToUpload;
 
-    private Restorer _authRestorer;
-    private Card _currentRestorerCard;
+    private Card _restorerCard;
 
-    private List<string> acceptedFileTypes;
-
-    public IRestorerRepository _restorerRepository { get; set; }
-    public ICardRepository _cardRepository { get; set; }
+    private List<string> _acceptedFileTypes;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
-        acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
+        _acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
         _isLoading = false;
-        _currentRestorerCard = _cardRepository.GetCardWithId(CardId);
-    }
-
-    Restorer GetAuthRestorer(string iId)
-    {
-        _authRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
-        return _authRestorer;
+        _restorerCard = CardRepository.GetCardWithId(CardId);
     }
 
     void ViewFileAndCardName(IFileListEntry[] files)
@@ -114,7 +110,7 @@
         {
             _fileInfos = $"Le fichier est trop gros. La taille maximale est : {MAX_FILE_SIZE_MB} MB.";
         }
-        else if (!acceptedFileTypes.Contains(_fileToUpload.Type))
+        else if (!_acceptedFileTypes.Contains(_fileToUpload.Type))
         {
             _fileInfos = "Seuls les fichiers de type PDF sont acceptés";
         }
@@ -127,17 +123,17 @@
 
     async Task CardAdded()
     {
-        string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
-        if (_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)
+        string aRestaurantSiretNumber = Restorer.RestaurantSiretNumber;
+        if (_restorerCard.CardName.Length != 0 && _restorerCard.CardName.Length < 40)
         {
             _isLoading = true;
             _cardInfos = "";
             try
             {
                 _fileInfos = "";
-                _currentRestorerCard = _cardRepository.UpdateCard(_currentRestorerCard);
+                _restorerCard = CardRepository.UpdateCard(_restorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
-                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.CardId}.pdf";
+                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_restorerCard.CardId}.pdf";
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
@@ -146,7 +142,7 @@
                 _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
             }
             _fileValidation = "La carte a été correctement modifiée.\n";
-            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.RestorerId}", forceLoad: true);
+            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{Restorer.RestorerId}", forceLoad: true);
             _isLoading = false;
         }
         else
@@ -158,36 +154,3 @@
 
     }
 }
-
-
-<style>
-    .drag-drop-zone {
-        border: 3px dashed #511621;
-        border-radius: 1rem;
-        padding: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background-color: #eee;
-        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
-        color: #aeaeae;
-        font-size: 1rem;
-        width: 100%;
-        height: 20px;
-        cursor: pointer;
-        position: relative;
-    }
-
-        .drag-drop-zone:hover {
-            background-color: #f5f5f5;
-        }
-
-        .drag-drop-zone input[type=file] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-</style>

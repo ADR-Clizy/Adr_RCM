@@ -5,14 +5,16 @@
     *
 *@
 
+@page "/CardManagment/CardsQRCode"
 
 @inject NavigationManager NavManager
-@inherits OwningComponentBase
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject IRestorerRepository RestorerRepository
+
+@inherits OwningComponentBase
+
 @using Tools
 @using Microsoft.Extensions.Configuration
-
-@page "/CardManagment/CardsQRCode"
 
 <AuthorizeView>
     <Authorized Context="_authContext">
@@ -41,10 +43,10 @@
 
                 <button class="btn btn-andromede top-divider" @onclick="SendQRCodeMail">Recevoir mes codes</button>
 
-                @if(_isCodeSended)
-                 {
-                        <h6 class="green-message top-divider">Le mail a été correctement envoyé. Vérifiez bien vos spams.</h6>
-                 }
+                @if (_isCodeSended)
+                {
+                    <h6 class="green-message top-divider">Le mail a été correctement envoyé. Vérifiez bien vos spams.</h6>
+                }
             </div>
         }
         else
@@ -58,28 +60,25 @@
 </AuthorizeView>
 
 @code {
-    private Restorer _currentRestorer;
-
-    private IRestorerRepository _restorerRepository;
+    private Restorer _restorer;
 
     private bool _isCodeSended;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _currentRestorer = new Restorer();
+        _restorer = new Restorer();
         _isCodeSended = false;
     }
 
     Restorer GetCurrentRestorer(string iId)
     {
-        _currentRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
-        return _currentRestorer;
+        _restorer = RestorerRepository.GetRestorerWithId(int.Parse(iId));
+        return _restorer;
     }
 
     async Task SendQRCodeMail()
     {
         _isCodeSended = true;
-        await QRCodeMailSender.SendMail(_currentRestorer, Configuration.GetValue<string>("DomainName"));
+        await QRCodeMailSender.SendMail(_restorer, Configuration.GetValue<string>("DomainName"));
     }
 }

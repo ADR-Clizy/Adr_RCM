@@ -1,16 +1,19 @@
 ﻿@*
- *
- * (c) 2021 Copyright Andromede
- * Unauthorized use and disclosure strictly forbidden
- *
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
 *@
-@using DatabaseConnection;
-@using Microsoft.Extensions.DependencyInjection;
-@using Andromede.Authentication;
+
 @inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
-@inherits OwningComponentBase
 @inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IRestorerRepository RestorerRepository
+
+@inherits OwningComponentBase
+
+@using DatabaseConnection;
+@using Andromede.Authentication;
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Bienvenue !</a>
@@ -55,10 +58,10 @@
                 else
                 {
                     @*<li class="nav-item px-3">
-                        <NavLink class="nav-link" href="RestorerManagment/Subscription">
-                            <span class="oi oi-grid-two-up" aria-hidden="true"></span>Souscrire
-                        </NavLink>
-                    </li>*@
+                            <NavLink class="nav-link" href="RestorerManagment/Subscription">
+                                <span class="oi oi-grid-two-up" aria-hidden="true"></span>Souscrire
+                            </NavLink>
+                        </li>*@
                 }
                 <li class="nav-item px-3">
                     <NavLink class="nav-link log-out-link" @onclick="RestorerLoggedOut">
@@ -89,23 +92,16 @@
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    public IRestorerRepository _restorerRepository { get; set; }
-
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
-    }
-
-    protected override void OnInitialized()
-    {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
     }
 
     private bool isRestorerSubscribed(string iId)
     {
         if (iId != null)
         {
-            return _restorerRepository.GetRestorerWithId(int.Parse(iId)).Subscribed;
+            return RestorerRepository.GetRestorerWithId(int.Parse(iId)).Subscribed;
         }
         return false;
     }

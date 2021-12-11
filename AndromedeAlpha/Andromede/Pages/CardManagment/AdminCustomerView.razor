@@ -5,23 +5,27 @@
     *
 *@
 
-@using Microsoft.Extensions.Configuration
 @page "/CardManagment/AdminCustomerView/Cards/{RestorerId:int}"
-@inherits OwningComponentBase
+
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject IRestorerRepository RestorerRepository
+
+@inherits OwningComponentBase
+
+@using Microsoft.Extensions.Configuration
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetCurrentRestorer() != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
+        @if (_restorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
             <div class="top-row centered-title">
-                <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
-                @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+                <h1 class="to-hide-for-mobile">@_restorer.RestaurantName</h1>
+                @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
                 {
                     <h3 style="margin-top:10%">Aucune carte disponible</h3>
                     <img src="img/ico/sad_boy.png" width="150" />
                 }
-                @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
+                @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
                 {
                     <div class="row">
                         <div class="col-2"></div>
@@ -47,25 +51,18 @@
     [Parameter]
     public int RestorerId { get; set; }
 
-    private Restorer _currentRestorer;
-    private IRestorerRepository _restorerRepository;
+    private Restorer _restorer;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _currentRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
-    }
-
-    Restorer GetCurrentRestorer()
-    {
-        return _currentRestorer;
+        _restorer = RestorerRepository.GetRestorerWithId(RestorerId);
     }
 
     bool isRestorerSubscribed()
     {
-        if (_currentRestorer != null)
+        if (_restorer != null)
         {
-            return _currentRestorer.Subscribed;
+            return _restorer.Subscribed;
         }
         return false;
     }

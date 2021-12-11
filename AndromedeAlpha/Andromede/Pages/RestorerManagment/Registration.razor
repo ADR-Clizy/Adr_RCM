@@ -1,17 +1,18 @@
 @*
- *
- * (c) 2021 Copyright Andromede
- * Unauthorized use and disclosure strictly forbidden
- *
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
 *@
-
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager NavManager
-@inject Blazored.SessionStorage.ISessionStorageService _sessionStorage
-@inherits OwningComponentBase
 
 @page "/RestorerManagment/Registration"
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject IRestorerRepository RestorerRepository
+
+@inherits OwningComponentBase
 
 <div class="top-row centered-title ">
     <img class="small bottom-divider" src="img/andromede_white_bg.png" />
@@ -98,17 +99,17 @@
     private string _existingAccount;
     private string _hashedPassword;
     private bool _isLoading;
-    private string _inputType = "password";
+    private string _inputType;
 
-    private Restorer _restorer = new Restorer();
-    private Restorer _restorerCopy = new Restorer();
-
-    public IRestorerRepository _restorerRepository { get; set; }
+    private Restorer _restorer;
+    private Restorer _restorerCopy;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
+        _restorer = new Restorer();
+        _restorerCopy = new Restorer();
         _restorer.RestaurantState = "France";
+        _inputType = "password";
         _isLoading = false;
     }
 
@@ -136,12 +137,12 @@
         else
         {
             CopyRestorerData();
-            _restorerCopy = _restorerRepository.NewRestorer(_restorerCopy);
+            _restorerCopy = RestorerRepository.NewRestorer(_restorerCopy);
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorerCopy.RestorerId);
-            await _sessionStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
-            await _sessionStorage.SetItemAsync("sEmailAddress", _restorerCopy.EmailAddress);
+            await SessionStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
+            await SessionStorage.SetItemAsync("sEmailAddress", _restorerCopy.EmailAddress);
             //Start the Session
-            NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad:true);
+            NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad: true);
         }
         _isLoading = false;
     }
@@ -167,12 +168,12 @@
 
     private bool IsEmailAdressExisting()
     {
-        return _restorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress) != null;
+        return RestorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress) != null;
     }
 
     private bool IsRestaurantSiretNumberExisting()
     {
-        return _restorerRepository.GetRestorerWithRestaurantSiretNumber(_restorer.RestaurantSiretNumber) != null;
+        return RestorerRepository.GetRestorerWithRestaurantSiretNumber(_restorer.RestaurantSiretNumber) != null;
     }
 
 

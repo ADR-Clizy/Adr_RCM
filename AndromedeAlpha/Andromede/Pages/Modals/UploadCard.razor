@@ -4,13 +4,16 @@
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
+
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
+@inject ICardRepository CardRepository
+
 @inherits OwningComponentBase
 
 <AuthorizeView>
     <Authorized Context="_authContext">
-        @if (GetAuthRestorer(_authContext.User.Identity.Name) != null)
+        @if (Restorer != null)
         {
             <div class="top-row px-2 centered-title">
                 <img class="small centered-image bottom-divider to-hide-for-mobile" src="img/andromede_white_bg.png" />
@@ -18,12 +21,12 @@
                 <h6 class="bottom-divider">Format accepté</h6>
                 <img class="accepted-format-image centered-image" src="img/ico/pdf.png" />
             </div>
-            <EditForm Model="@_currentRestorerCard" OnValidSubmit="@CardAdded">
+            <EditForm Model="@_restorerCard" OnValidSubmit="@CardAdded">
                 <div class="form-row connexion-div top-divider">
                     <div class="form-group col-sm-2"></div>
                     <div class="form-group col-sm-8">
                         <label for="cardName"><span class="oi oi-clipboard form-icon"></span>Nom de la carte</label>
-                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_currentRestorerCard.CardName" />
+                        <InputText type="text" class="form-control" id="cardName" placeholder="Carte du jour" @bind-Value="_restorerCard.CardName" />
                         <h6 style="color:red" class="top-divider">@_cardInfos</h6>
                     </div>
                     <div class="form-group col-sm-2"></div>
@@ -55,7 +58,6 @@
                         </div>
                     }
                 </div>
-
             </EditForm>
         }
     </Authorized>
@@ -66,6 +68,9 @@
 
 
 @code {
+    [Parameter]
+    public Restorer Restorer { get; set; }
+
     private const int MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private const int MAX_FILE_SIZE_MB = 10;
 
@@ -80,28 +85,16 @@
 
     private IFileListEntry _fileToUpload;
 
-    private Restorer _authRestorer;
-    private Card _currentRestorerCard;
+    private Card _restorerCard;
 
     private List<string> acceptedFileTypes;
 
-    public IRestorerRepository _restorerRepository { get; set; }
-    public ICardRepository _cardRepository { get; set; }
-
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-        _cardRepository = ScopedServices.GetRequiredService<ICardRepository>();
         acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
         _isLoading = false;
-        _currentRestorerCard = new Card();
-        _currentRestorerCard.CardName = "";
-    }
-
-    Restorer GetAuthRestorer(string iId)
-    {
-        _authRestorer = _restorerRepository.GetRestorerWithId(int.Parse(iId));
-        return _authRestorer;
+        _restorerCard = new Card();
+        _restorerCard.CardName = "";
     }
 
     void ViewFileAndCardName(IFileListEntry[] files)
@@ -133,8 +126,8 @@
 
     async Task CardAdded()
     {
-        string aRestaurantSiretNumber = _authRestorer.RestaurantSiretNumber;
-        if (_currentRestorerCard.CardName.Length != 0 && _currentRestorerCard.CardName.Length < 40)
+        string aRestaurantSiretNumber = Restorer.RestaurantSiretNumber;
+        if (_restorerCard.CardName.Length != 0 && _restorerCard.CardName.Length < 40)
         {
             _isLoading = true;
             _isFileCorrect = false;
@@ -142,10 +135,10 @@
             try
             {
                 _fileInfos = "";
-                _currentRestorerCard.RestorerId = _authRestorer.RestorerId;
-                _currentRestorerCard = _cardRepository.NewCard(_currentRestorerCard);
+                _restorerCard.RestorerId = Restorer.RestorerId;
+                _restorerCard = CardRepository.NewCard(_restorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
-                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_currentRestorerCard.CardId}.pdf";
+                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_restorerCard.CardId}.pdf";
                 using FileStream aFileStream = File.Create(aFileToUploadPath);
                 await aFileToUploadStream.CopyToAsync(aFileStream);
             }
@@ -154,7 +147,7 @@
                 _fileError = "Une erreur est survenue, nous sommes désolé pour la gêne occasionnée, veuillez réessayer l'opération.";
             }
             _fileValidation = "La carte a été correctement ajoutée au serveur Andromede.\n";
-            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_authRestorer.RestorerId}", forceLoad: true);
+            NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{Restorer.RestorerId}", forceLoad: true);
             _isLoading = false;
         }
         else
@@ -166,37 +159,3 @@
 
     }
 }
-
-<style>
-    .drag-drop-zone {
-        border: 3px dashed #511621;
-        border-radius: 1rem;
-        padding: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background-color: #eee;
-        box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
-        color: #aeaeae;
-        font-size: 1rem;
-        width: 100%;
-        height: 20px;
-        cursor: pointer;
-        margin: 1% 0 0 0;
-        position: relative;
-    }
-
-        .drag-drop-zone:hover {
-            background-color: #f5f5f5;
-        }
-
-        .drag-drop-zone input[type=file] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-</style>
-

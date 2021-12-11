@@ -7,20 +7,23 @@
 
 @page "/CardManagment/Customer/Cards/{RestorerId:int}"
 
-@using Microsoft.Extensions.Configuration
-@inherits OwningComponentBase
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject IRestorerRepository RestorerRepository
 
-@if (GetCurrentRestorer() != null)
+@inherits OwningComponentBase
+
+@using Microsoft.Extensions.Configuration
+
+@if (_restorer != null)
 {
     <div class="top-row centered-title">
-        <h1 class="to-hide-for-mobile">@_currentRestorer.RestaurantName</h1>
-        @if (!_restorerRepository.GetCards(_currentRestorer.RestorerId).Any())
+        <h1 class="to-hide-for-mobile">@_restorer.RestaurantName</h1>
+        @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
         {
             <h3 style="margin-top:10%">Aucune carte disponible</h3>
             <img src="img/ico/sad_boy.png" width="150" />
         }
-        @foreach (Card aCard in _restorerRepository.GetCards(_currentRestorer.RestorerId))
+        @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
         {
             <div class="row">
                 <div class="col-2"></div>
@@ -41,17 +44,10 @@ else
     [Parameter]
     public int RestorerId { get; set; }
 
-    private Restorer _currentRestorer;
-    private IRestorerRepository _restorerRepository;
+    private Restorer _restorer;
 
     protected override void OnInitialized()
     {
-        _restorerRepository = ScopedServices.GetRequiredService<IRestorerRepository>();
-    }
-
-    Restorer GetCurrentRestorer()
-    {
-        _currentRestorer = _restorerRepository.GetRestorerWithId(RestorerId);
-        return _currentRestorer;
+        _restorer = RestorerRepository.GetRestorerWithId(RestorerId);
     }
 }
