@@ -24,12 +24,14 @@ namespace Andromede.Authentication
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             int? anId              = await _localStorageService.GetItemAsync<int>("sId");
+            string anEmailAdress   = await _localStorageService.GetItemAsync<string>("sEmailAddress");
             ClaimsIdentity anIdentity;
 
-            if (anId != null)
+            if (anId != null && anEmailAdress != null)
             {
                 anIdentity = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, anId.ToString())
+                    new Claim(ClaimTypes.Name, anId.ToString()),
+                    new Claim(ClaimTypes.Email, anEmailAdress),
                 }, "apiauth_type") ;
             }
             else
