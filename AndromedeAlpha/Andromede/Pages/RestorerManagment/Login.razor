@@ -89,6 +89,7 @@
         {
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.RestorerId);
             await LocalStorage.SetItemAsync("sId", _storedRestorer.RestorerId);
+            await LocalStorage.SetItemAsync("sEmailAddress", _storedRestorer.EmailAddress);
             if (_storedRestorer.Subscribed == true)
             {
                 NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_storedRestorer.RestorerId}", forceLoad: true);

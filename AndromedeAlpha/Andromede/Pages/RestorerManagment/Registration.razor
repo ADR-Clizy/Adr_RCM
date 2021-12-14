@@ -140,6 +140,7 @@
             _restorerCopy = RestorerRepository.NewRestorer(_restorerCopy);
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorerCopy.RestorerId);
             await LocalStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
+            await LocalStorage.SetItemAsync("sEmailAddress", _restorerCopy.EmailAddress);
             //Start the Session
             NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad: true);
         }
