@@ -4,10 +4,12 @@
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
+@using Andromede.Pages.Tools
 
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
 @inject ICardRepository CardRepository
+@inject IPdfFileManager FileManager
 
 @inherits OwningComponentBase
 
@@ -138,9 +140,11 @@
                 _restorerCard.RestorerId = Restorer.RestorerId;
                 _restorerCard = CardRepository.NewCard(_restorerCard);
                 using Stream aFileToUploadStream = _fileToUpload.Data;
-                var aFileToUploadPath = $"wwwroot/Customer/Cards/{_restorerCard.CardId}.pdf";
-                using FileStream aFileStream = File.Create(aFileToUploadPath);
-                await aFileToUploadStream.CopyToAsync(aFileStream);
+                string aFileName = _restorerCard.CardId.ToString() + ".pdf";
+                await FileManager.UploadCard(aFileName, aFileToUploadStream);
+                //var aFileToUploadPath = $"wwwroot/Customer/Cards/{_restorerCard.CardId}.pdf";
+                //using FileStream aFileStream = File.Create(aFileToUploadPath);
+                //await aFileToUploadStream.CopyToAsync(aFileStream);
             }
             catch
             {

@@ -29,13 +29,13 @@
                 <h5 class="bottom-divider">Vous pouvez ici ajouter, modifier ou supprimer une carte.</h5>
                 @if (!RestorerRepository.GetCards(RestorerId).Any())
                 {
-                    <img src="img/ico/add_card.png" class="no-card-image" @onclick="@(() => Modal.Show<UploadCard>("Ajouter une carte"))" />
+                    <img src="img/ico/add_card.png" class="no-card-image" @onclick="UploadACard" />
                     <h4 style="margin-top : 20%">Vous n'avez aucune carte pour le moment.</h4>
                     <h5>Veuillez cliquer sur l'icone : <img src="img/ico/add_card.png" class="add-card-image" /> afin d'ajouter votre première carte</h5>
                 }
                 @foreach (Card aCard in RestorerRepository.GetCards(RestorerId))
                 {
-                    <div class="row" id="@aCard.CardName">
+                    <div class="row">
                         <div class="col-2"></div>
                         <div class="col-8">
                             <div class="horizontal-division"></div>
@@ -52,7 +52,7 @@
                     <div class="row">
                         <div class="col-2"></div>
                         <div class="col-8">
-                            <iframe src=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") class="pdf-card-viewer" type='application/pdf' />
+                            <iframe src=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") class="pdf-card-viewer" type='application/pdf' />
                         </div>
                         <div class="col-2"></div>
                     </div>
@@ -107,6 +107,7 @@
     {
         var aParameters = new ModalParameters();
         aParameters.Add(nameof(Card.CardId), iCardId);
+        aParameters.Add(nameof(Restorer.RestorerId), _restorer.RestorerId);
         var anOptions = new ModalOptions()
         {
             HideCloseButton = true,

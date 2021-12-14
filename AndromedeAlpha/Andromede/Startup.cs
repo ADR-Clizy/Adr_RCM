@@ -7,7 +7,7 @@
 
 using Andromede.Authentication;
 using Blazored.Modal;
-using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using DatabaseConnection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stripe;
+using Andromede.Pages.Tools;
 
 namespace Andromede
 {
@@ -37,9 +38,10 @@ namespace Andromede
             //services.AddMvc().AddNewtonsoftJson();
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazoredSessionStorage();
+            services.AddBlazoredLocalStorage();
             services.AddBlazoredModal();
             services.AddScoped<AuthenticationStateProvider, AndromedeAuthenticationStateProvider>();
+            services.AddScoped<IPdfFileManager, PdfFileManager>();
             services.AddScoped<IRestorerRepository, SQLRestorerRepository>();
             services.AddScoped<ICardRepository, SQLCardRepository>();
             services.AddScoped<IRestorerClaimRepository, SQLRestorerClaimRepository>();

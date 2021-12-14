@@ -19,7 +19,7 @@
         @if (_restorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
             <div class="top-row centered-title">
-                <h1 class="to-hide-for-mobile">@_restorer.RestaurantName</h1>
+                <h2 class="to-hide-for-mobile" style="margin-bottom:20px">@_restorer.RestaurantName</h2>
                 @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
                 {
                     <h3 style="margin-top:10%">Aucune carte disponible</h3>
@@ -27,10 +27,10 @@
                 }
                 @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
                 {
-                    <div class="row">
+                    <div class="row" style="margin-bottom:20px">
                         <div class="col-2"></div>
                         <div class="col-8">
-                            <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                            <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
                         </div>
                         <div class="col-2"></div>
                     </div>

@@ -5,9 +5,12 @@
     *
 *@
 
+@using Andromede.Pages.Tools
+
 @inject IJSRuntime jsRuntime
 @inject NavigationManager NavManager
 @inject ICardRepository CardRepository
+@inject IPdfFileManager FileManager 
 
 @inherits OwningComponentBase
 
@@ -26,27 +29,29 @@
 
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
 
-    [Parameter] public int CardId { get; set; }
+    [Parameter]
+    public int CardId { get; set; }
+
+    [Parameter]
+    public int RestorerId { get; set; }
 
     private Card _restorerCard;
-    private string _filePath;
+    private string _fileName;
 
     protected override void OnInitialized()
     {
         _restorerCard = CardRepository.GetCardWithId(CardId);
-        _filePath = $"wwwroot/Customer/Cards/{CardId}.pdf";
+        _fileName = $"{CardId}.pdf";
     }
 
     async Task DeleteCurrentCard()
     {
         CardRepository.DeleteCard(CardId);
-        if (System.IO.File.Exists(_filePath))
-        {
-            System.IO.File.Delete(_filePath);
-        }
-        NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+        await FileManager.DeleteCard(_fileName);
+        NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{RestorerId}", forceLoad: true);
         await ModalInstance.CloseAsync(ModalResult.Ok<Card>(_restorerCard));
     }
 

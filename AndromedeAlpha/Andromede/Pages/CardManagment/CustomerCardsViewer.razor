@@ -25,10 +25,10 @@
         }
         @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
         {
-            <div class="row">
+            <div class="row" style="margin-bottom:15px">
                 <div class="col-2"></div>
                 <div class="col-8">
-                    <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("DomainName") + $"/Customer/Cards/{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                    <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
                 </div>
                 <div class="col-2"></div>
             </div>

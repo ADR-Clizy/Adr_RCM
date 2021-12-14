@@ -9,7 +9,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IRestorerRepository RestorerRepository
 
 @inherits OwningComponentBase
@@ -139,8 +139,7 @@
             CopyRestorerData();
             _restorerCopy = RestorerRepository.NewRestorer(_restorerCopy);
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_restorerCopy.RestorerId);
-            await SessionStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
-            await SessionStorage.SetItemAsync("sEmailAddress", _restorerCopy.EmailAddress);
+            await LocalStorage.SetItemAsync("sId", _restorerCopy.RestorerId);
             //Start the Session
             NavManager.NavigateTo("/RestorerManagment/Subscription", forceLoad: true);
         }

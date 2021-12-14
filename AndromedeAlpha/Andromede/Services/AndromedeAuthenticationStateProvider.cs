@@ -5,7 +5,7 @@
 *
 */
 
-using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,25 +14,22 @@ namespace Andromede.Authentication
 {
     public class AndromedeAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private ISessionStorageService _sessionStorageService;
+        private ILocalStorageService _localStorageService;
 
-        public AndromedeAuthenticationStateProvider(ISessionStorageService iSessionStorageService)
+        public AndromedeAuthenticationStateProvider(ILocalStorageService iLocalStorageService)
         {
-            _sessionStorageService = iSessionStorageService;
+            _localStorageService = iLocalStorageService;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            int? anId              = await _sessionStorageService.GetItemAsync<int>("sId");
-            string anEmailAdress   = await _sessionStorageService.GetItemAsync<string>("sEmailAddress");
-            
+            int? anId              = await _localStorageService.GetItemAsync<int>("sId");
             ClaimsIdentity anIdentity;
 
-            if (anId != null && anEmailAdress != null)
+            if (anId != null)
             {
                 anIdentity = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, anId.ToString()),
-                    new Claim(ClaimTypes.Email, anEmailAdress),
+                    new Claim(ClaimTypes.Name, anId.ToString())
                 }, "apiauth_type") ;
             }
             else
@@ -58,8 +55,8 @@ namespace Andromede.Authentication
 
         public void RestorerIsLoggedOut()
         {
-            _sessionStorageService.RemoveItemAsync("sId");
-            _sessionStorageService.RemoveItemAsync("sEmailAddress");
+            _localStorageService.RemoveItemAsync("sId");
+            _localStorageService.RemoveItemAsync("sEmailAddress");
 
             ClaimsIdentity anIdentity = new ClaimsIdentity();
 

@@ -10,7 +10,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
 @inject IModalService Modal
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject IRestorerRepository RestorerRepository
 
 @inherits OwningComponentBase
@@ -88,8 +88,7 @@
         if (isRestorerExisting() && isPasswordCorrect())
         {
             ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsAuthenticated(_storedRestorer.RestorerId);
-            await SessionStorage.SetItemAsync("sId", _storedRestorer.RestorerId);
-            await SessionStorage.SetItemAsync("sEmailAddress", _storedRestorer.EmailAddress);
+            await LocalStorage.SetItemAsync("sId", _storedRestorer.RestorerId);
             if (_storedRestorer.Subscribed == true)
             {
                 NavManager.NavigateTo($"/CardManagment/Restorer/Cards/{_storedRestorer.RestorerId}", forceLoad: true);
