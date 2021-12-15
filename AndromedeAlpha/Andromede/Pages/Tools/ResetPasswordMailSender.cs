@@ -35,7 +35,7 @@ namespace Andromede.Pages.Tools
             EmailAddress aFromMail = new EmailAddress("adr.clizy@outlook.fr", "Andromede Services");
             string aSubject = "Reinitialisation du mot de passe";
             var aToMail = new EmailAddress(iRestorer.EmailAddress, iRestorer.RestaurantName);
-            string aNewPasswordLink = iDomainName + $"/RestorerManagment/NewPassword/{iRestorerClaim.ClaimGUID}";
+            string aNewPasswordLink = iDomainName + $"RestorerManagment/NewPassword/{iRestorerClaim.ClaimGUID}";
             var aMail = new SendGridMessage();
             aMail.SetFrom(aFromMail);
             aMail.AddTo(aToMail);

@@ -126,10 +126,6 @@
         {
             _existingAccount = "Un compte avec cette adresse mail existe déjà";
         }
-        else if (IsRestaurantSiretNumberExisting())
-        {
-            _existingAccount = "Un compte avec ce numéro de Siret existe déjà";
-        }
         else if (!IsPasswordConfirmed())
         {
             _missMatchedPasswords = "Les mots de passe ne correspondent pas";
@@ -150,10 +146,10 @@
     void CopyRestorerData()
     {
         _restorerCopy.RestorerId = _restorer.RestorerId;
-        _restorerCopy.FirstName = _restorer.FirstName;
-        _restorerCopy.LastName = _restorer.LastName;
+        _restorerCopy.FirstName = "";
+        _restorerCopy.LastName = "";
         _restorerCopy.PhoneNumber = _restorer.PhoneNumber;
-        _restorerCopy.RestaurantSiretNumber = _restorer.RestaurantSiretNumber;
+        _restorerCopy.RestaurantSiretNumber = "";
         _restorerCopy.RestaurantName = _restorer.RestaurantName;
         _restorerCopy.RestaurantState = _restorer.RestaurantState;
         _restorerCopy.EmailAddress = _restorer.EmailAddress;
@@ -170,12 +166,6 @@
     {
         return RestorerRepository.GetRestorerWithEmailAddress(_restorer.EmailAddress) != null;
     }
-
-    private bool IsRestaurantSiretNumberExisting()
-    {
-        return RestorerRepository.GetRestorerWithRestaurantSiretNumber(_restorer.RestaurantSiretNumber) != null;
-    }
-
 
     private void ShowPassword()
     {
