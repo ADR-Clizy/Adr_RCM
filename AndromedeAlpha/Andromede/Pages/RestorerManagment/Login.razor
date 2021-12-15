@@ -18,50 +18,57 @@
 @using Andromede.Pages.Modals
 @using DatabaseConnection.RestorerModels
 
-<div class="top-row px-2 centered-title ">
-    <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
-    <EditForm Model="@_restorerLogin" OnValidSubmit="@RestorerConnection" id="connexion-form">
-        <DataAnnotationsValidator />
-        <div class="form-row">
-            <div class="form-group col-sm-10">
-                <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
-                <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorerLogin.EmailAddress" />
-                <ValidationMessage For="@(() => _restorerLogin.EmailAddress)" />
-            </div>
-            <div class="col-sm-2"></div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-sm-10">
-                <label for="userPassword"><span class="oi oi-key form-icon"></span>Mot de passe</label>
-                <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorerLogin.Password" />
-                <ValidationMessage For="@(() => _restorerLogin.Password)" />
-            </div>
-            <div class="form-group col-sm-2">
-                <img id="password-eye-connexion" src="img/ico/password_eye.png" @onclick="ShowPassword" />
-            </div>
-
-        </div>
-        <div class="form-row">
-            <div class="form-group col-sm-10">
-                <button type="submit" class="btn btn-andromede connexion-div">Connexion</button>
-                <p id="errorOccurred" class="form-alert form-text">@_errorOccurred</p>
-                @if (_isLoading)
-                {
-                    <div class="spinner-border text-andromede" role="status">
-                        <span class="sr-only">Loading...</span>
+<AuthorizeView Context="_authContext">
+    <Authorized Context="_authContext">
+        <NotAuthorizedViewer/>
+    </Authorized>
+    <NotAuthorized>
+        <div class="top-row px-2 centered-title ">
+            <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
+            <EditForm Model="@_restorerLogin" OnValidSubmit="@RestorerConnection" id="connexion-form">
+                <DataAnnotationsValidator />
+                <div class="form-row">
+                    <div class="form-group col-sm-10">
+                        <label for="userEmail"><span class="oi oi-person form-icon"></span>Adresse mail</label>
+                        <InputText type="email" class="form-control" id="userEmail" placeholder="nom@exemple.com" @bind-Value="_restorerLogin.EmailAddress" />
+                        <ValidationMessage For="@(() => _restorerLogin.EmailAddress)" />
                     </div>
-                }
-            </div>
-            <div class="col-sm-2"></div>
+                    <div class="col-sm-2"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-10">
+                        <label for="userPassword"><span class="oi oi-key form-icon"></span>Mot de passe</label>
+                        <InputText type="@_inputType" class="form-control" id="userPassword" @bind-Value="_restorerLogin.Password" />
+                        <ValidationMessage For="@(() => _restorerLogin.Password)" />
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <img id="password-eye-connexion" src="img/ico/password_eye.png" @onclick="ShowPassword" />
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-10">
+                        <button type="submit" class="btn btn-andromede connexion-div">Connexion</button>
+                        <p id="errorOccurred" class="form-alert form-text">@_errorOccurred</p>
+                        @if (_isLoading)
+                        {
+                            <div class="spinner-border text-andromede" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-2"></div>
+                </div>
+            </EditForm>
         </div>
-    </EditForm>
-</div>
-<div>
-    <a href="/RestorerManagment/Login" @onclick="AskForNewPassword" class="subform-connexion-link">Mot de passe oublié ?</a>
-</div>
-<div>
-    <a href="RestorerManagment/Registration" class="subform-connexion-link">Pas encore inscrit ?</a>
-</div>
+        <div>
+            <a href="/RestorerManagment/Login" @onclick="AskForNewPassword" class="subform-connexion-link">Mot de passe oublié ?</a>
+        </div>
+        <div>
+            <a href="RestorerManagment/Registration" class="subform-connexion-link">Pas encore inscrit ?</a>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 
