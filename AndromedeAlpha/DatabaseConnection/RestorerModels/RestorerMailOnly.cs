@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DatabaseConnection.RestorerModels
 {
-    public class RestorerAskForNewPassword
+    public class RestorerMailOnly
     {
         [Required(ErrorMessage = "Champ requis")]
         [EmailAddress(ErrorMessage = "Format incorrect")]

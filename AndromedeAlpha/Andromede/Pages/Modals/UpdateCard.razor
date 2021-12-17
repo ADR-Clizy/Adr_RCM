@@ -1,9 +1,10 @@
 ﻿@*
     *
-    * (c) 2021-2021 Copyright Andromede
+    * (c) 2021 Copyright Andromede
     * Unauthorized use and disclosure strictly forbidden
     *
 *@
+
 @using Andromede.Pages.Tools
 
 @inject IJSRuntime jsRuntime
@@ -38,7 +39,7 @@
                     <div class="form-group col-sm-1"></div>
                     <div class="form-group col-sm-10">
                         <div class="drag-drop-zone">
-                            <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf,application/vnd.ms-excel" />
+                            <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf" />
                             Glissez un fichier ou cliquez pour déposer une fichier
                         </div>
                     </div>
@@ -96,7 +97,7 @@
 
     protected override void OnInitialized()
     {
-        _acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
+        _acceptedFileTypes = new List<string>() { "application/pdf" };
         _isLoading = false;
         _restorerCard = CardRepository.GetCardWithId(CardId);
     }

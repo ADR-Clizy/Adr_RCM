@@ -37,7 +37,7 @@
                     <div class="form-group col-sm-1"></div>
                     <div class="form-group col-sm-10">
                         <div class="drag-drop-zone">
-                            <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf,application/vnd.ms-excel" />
+                            <BlazorInputFile.InputFile OnChange="ViewFileAndCardName" accept="application/pdf" />
                             Glissez un fichier ou cliquez pour déposer une fichier
                         </div>
                     </div>
@@ -93,7 +93,7 @@
 
     protected override void OnInitialized()
     {
-        acceptedFileTypes = new List<string>() { "application/pdf", "application/vnd.ms-excel" };
+        acceptedFileTypes = new List<string>() { "application/pdf" };
         _isLoading = false;
         _restorerCard = new Card();
         _restorerCard.CardName = "";

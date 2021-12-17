@@ -19,6 +19,7 @@ namespace DatabaseConnection
         Restorer UpdateProfile(Restorer ioRestorerChanges);
         Restorer DeleteProfile(int iId);
         List<Card> GetCards(int iId);
+        List<RestorerClaim> GetRestorerClaims(int iId);
         bool IsRestorerSubscribed(int iId);
     }
 }

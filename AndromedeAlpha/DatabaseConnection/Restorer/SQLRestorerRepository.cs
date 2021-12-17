@@ -74,5 +74,10 @@ namespace DatabaseConnection
         {
             return _context.Cards.Where(aCard => iId == aCard.RestorerId).ToList();
         }
+
+        public List<RestorerClaim> GetRestorerClaims(int iId)
+        {
+            return _context.RestorerClaims.Where(aRestorerClaim => iId == aRestorerClaim.RestorerId).ToList();
+        }
     }
 }

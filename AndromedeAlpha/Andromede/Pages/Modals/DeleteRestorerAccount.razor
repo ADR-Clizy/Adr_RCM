@@ -1,0 +1,75 @@
+﻿@*
+    *
+    * (c) 2021 Copyright Andromede
+    * Unauthorized use and disclosure strictly forbidden
+    *
+*@
+
+@using DatabaseConnection.RestorerModels
+
+@inject IRestorerRepository RestorerRepository
+@inject ICardRepository CardRepository
+@inject IRestorerClaimRepository RestorerClaimRepository
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inherits OwningComponentBase
+
+<EditForm Model="@_restorerAskToDeleteAccount" OnValidSubmit="@DeleteAccount">
+    <DataAnnotationsValidator />
+    <div class="top-row px-2 centered-title">
+        <div class="form-row connexion-div top-divider">
+            <div class="form-group col-sm-2"></div>
+            <div class="form-group col-sm-8">
+                <label for="emailAddress"><span class="oi oi-person form-icon"></span>Adresse mail</label>
+                <InputText type="text" class="form-control" id="emailAddress" @bind-Value="_restorerAskToDeleteAccount.EmailAddress" />
+                <ValidationMessage For="@(() => _restorerAskToDeleteAccount.EmailAddress)" />
+            </div>
+            <div class="form-group col-sm-2"></div>
+
+        </div>
+        <div class="centered-title bottom-divider">
+            <h6 style="color:red">@_errorMessage</h6>
+            <button type="submit" class="btn btn-andromede">Supprimer mon compte</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public Restorer Restorer { get; set; }
+
+    private RestorerMailOnly _restorerAskToDeleteAccount;
+
+    private string _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        _restorerAskToDeleteAccount = new RestorerMailOnly();
+    }
+
+    void DeleteAccount()
+    {
+        if (_restorerAskToDeleteAccount.EmailAddress == Restorer.EmailAddress)
+        {
+            ((AndromedeAuthenticationStateProvider)AuthenticationStateProvider).RestorerIsLoggedOut();
+            foreach (Card aCard in RestorerRepository.GetCards(Restorer.RestorerId))
+            {
+                CardRepository.DeleteCard(aCard.CardId);
+            }
+            foreach (RestorerClaim aRestorerClaim in RestorerRepository.GetRestorerClaims(Restorer.RestorerId))
+            {
+                RestorerClaimRepository.DeleteRestorerClaim(aRestorerClaim.RestorerClaimId);
+            }
+            RestorerRepository.DeleteProfile(Restorer.RestorerId);
+            NavManager.NavigateTo("/");
+        }
+        else
+        {
+            _errorMessage = "Les adresses mails ne correspondent pas";
+        }
+    }
+}

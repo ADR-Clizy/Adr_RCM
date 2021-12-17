@@ -103,7 +103,7 @@
                     </div>
                     <div class="col-sm-6">
                         <h6><strong>Vous voulez supprimer votre compte ?</strong></h6>
-                        <button class="btn btn-andromede top-divider">Supprimer mon compte</button>
+                        <button @onclick="AskToDeleteRestorerAccount" class="btn btn-andromede top-divider">Supprimer mon compte</button>
                     </div>
                 </div>
             </div>
@@ -206,7 +206,14 @@
         {
             HideCloseButton = true
         };
-        Modal.Show<AskForNewPasswordFromProfile>($"Voulez vous réinitialiser votre mot de passe ?", aParameters, aOptions);
+        Modal.Show<AskForNewPasswordFromProfile>("Voulez vous réinitialiser votre mot de passe ?", aParameters, aOptions);
+    }
+
+    void AskToDeleteRestorerAccount()
+    {
+        var aParameters = new ModalParameters();
+        aParameters.Add(nameof(Restorer), _restorer);
+        Modal.Show<DeleteRestorerAccount>("Supression du compte", aParameters);
     }
 
     void CopyRestorerData()
@@ -217,6 +224,7 @@
         _restorerProfile.LastName = _restorer.LastName;
         _restorerProfile.EmailAddress = _restorer.EmailAddress;
         _restorerProfile.PhoneNumber = _restorer.PhoneNumber;
+
     }
 
     void CopyRestorerProfileData()
