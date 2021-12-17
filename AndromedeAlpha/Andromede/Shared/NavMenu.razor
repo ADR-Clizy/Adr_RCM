@@ -5,15 +5,15 @@
     *
 *@
 
+@using DatabaseConnection;
+@using Andromede.Authentication;
+
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IRestorerRepository RestorerRepository
 
 @inherits OwningComponentBase
-
-@using DatabaseConnection;
-@using Andromede.Authentication;
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Bienvenue !</a>

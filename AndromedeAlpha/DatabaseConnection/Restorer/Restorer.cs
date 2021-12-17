@@ -64,6 +64,16 @@ namespace DatabaseConnection
 
         public bool Subscribed { get; set; } = false;
 
+        public string Description { get; set; }
+
+        public string FacebookLink { get; set; }
+
+        public string TwitterLink { get; set; }
+
+        public string InstagramLink { get; set; }
+
+        public string LinkedInLink { get; set; }
+
         public List<Card> Cards { get; set; }
 
         public List<RestorerClaim> RestorerClaims { get; set; }
