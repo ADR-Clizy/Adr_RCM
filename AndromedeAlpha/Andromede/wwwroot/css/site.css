@@ -7,9 +7,10 @@
 
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
 /*******COMMON CLASSES*******/
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Carlito;
 }
 
 a, .btn-link {
@@ -22,6 +23,10 @@ a:hover, .btn-link:hover {
 
 a:checked, .btn-link:checked {
     color: #6B303A;
+}
+
+strong {
+    color: #5b1925;
 }
 
 .btn-primary {
