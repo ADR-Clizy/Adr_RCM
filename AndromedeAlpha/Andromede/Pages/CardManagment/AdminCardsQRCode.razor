@@ -29,9 +29,9 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <img width="350" src="@String.Format("data:image/png;base64,{0}",
+                        <img width="280" src="@String.Format("data:image/png;base64,{0}",
                                                Convert.ToBase64String(QRCodeManager.GenerateQRCode
-                                                                     (Configuration.GetValue<string>("DomainName") + $"/CardManagment/Customer/Cards/{_authContext.User.Identity.Name}"
+                                                                     (Configuration.GetValue<string>("DomainName") + $"CardManagment/Customer/Cards/{_authContext.User.Identity.Name}"
                                                                       ,10)))" />
                     </div>
                 </div>

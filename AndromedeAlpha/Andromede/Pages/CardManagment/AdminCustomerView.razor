@@ -19,7 +19,7 @@
         @if (_restorer != null && RestorerId == int.Parse(_authContext.User.Identity.Name) && isRestorerSubscribed())
         {
             <div class="top-row centered-title">
-                <h2 class="to-hide-for-mobile" style="margin-bottom:20px">@_restorer.RestaurantName</h2>
+                <h2 class="to-hide-for-mobile bottom-divider" style="margin-bottom:20px">@_restorer.RestaurantName</h2>
                 @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
                 {
                     <h3 style="margin-top:10%">Aucune carte disponible</h3>
@@ -30,7 +30,7 @@
                     <div class="row" style="margin-bottom:20px">
                         <div class="col-2"></div>
                         <div class="col-8">
-                            <a class="btn btn-andromede" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
+                            <a class="btn btn-dark" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
                         </div>
                         <div class="col-2"></div>
                     </div>
@@ -46,7 +46,15 @@
         <NotAuthorizedViewer />
     </NotAuthorized>
 </AuthorizeView>
-
+<style>
+    body {
+        background-image: url('img/cards_background.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size:cover;
+    }
+</style>
 @code {
     [Parameter]
     public int RestorerId { get; set; }
