@@ -27,7 +27,7 @@ namespace Andromede.Pages.Tools
         {
             string anApiKey = Environment.GetEnvironmentVariable("ANDROMEDE_MAILING_SYSTEM");
             SendGridClient aClient = new SendGridClient(anApiKey);
-            EmailAddress aFromMail = new EmailAddress("adr.clizy@outlook.fr", "Andromede Services");
+            EmailAddress aFromMail = new EmailAddress("no-reply@andromede-rcm.fr", "Andromede Services");
             var aToMail = new EmailAddress(iRestorer.EmailAddress, iRestorer.RestaurantName);
             var aMail = new SendGridMessage();
             var aQRCodeLink = iDomainName + $"/CardManagment/Customer/Cards/{iRestorer.RestorerId}";

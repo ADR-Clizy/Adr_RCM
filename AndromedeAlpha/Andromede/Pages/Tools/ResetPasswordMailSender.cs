@@ -32,7 +32,7 @@ namespace Andromede.Pages.Tools
         {
             string anApiKey = Environment.GetEnvironmentVariable("ANDROMEDE_MAILING_SYSTEM");
             SendGridClient aClient = new SendGridClient(anApiKey);
-            EmailAddress aFromMail = new EmailAddress("adr.clizy@outlook.fr", "Andromede Services");
+            EmailAddress aFromMail = new EmailAddress("no-reply@andromede-rcm.fr", "Andromede Services");
             string aSubject = "Reinitialisation du mot de passe";
             var aToMail = new EmailAddress(iRestorer.EmailAddress, iRestorer.RestaurantName);
             string aNewPasswordLink = iDomainName + $"RestorerManagment/NewPassword/{iRestorerClaim.ClaimGUID}";
