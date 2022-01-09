@@ -32,7 +32,7 @@ namespace Andromede.Pages.Tools
 
             Image aQRCodeToResize = Image.FromStream(aQRCodeStream);
             XImage aQRCodeAsXImage = XImage.FromStream(ResizeImage(aQRCodeToResize, 175, 175));
-            XImage aLogoAsXImage = XImage.FromFile("wwwroot/img/andromede_white_bg.png");
+            XImage aLogoAsXImage = XImage.FromFile("wwwroot/img/andromede_white_bg_alone.png");
             PdfDocument aDocument = new PdfDocument();
 
             PdfPage aPage = aDocument.AddPage();

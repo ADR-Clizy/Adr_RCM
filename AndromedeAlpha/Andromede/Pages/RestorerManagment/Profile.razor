@@ -23,7 +23,7 @@
                 <img class="small centered-image bottom-divider" src="img/andromede_white_bg.png" />
                 <h5>Vous pouvez modifier vos informations si nécessaire</h5>
                 <EditForm Model="@_restorerProfile" OnValidSubmit="@RestorerModified" id="modification-form">
-                    <DataAnnotationsValidator/>
+                    <DataAnnotationsValidator />
                     <div class="form-row">
                         <div class="form-group col-sm-12">
                             <label for="userSiretNumber">
@@ -79,6 +79,53 @@
                             </label>
                             <InputText type="tel" class="form-control" id="userPhoneNumber" @bind-Value="_restorerProfile.PhoneNumber" />
                             <ValidationMessage For="@(() => _restorerProfile.PhoneNumber)" />
+                        </div>
+                    </div>
+                    @*LINKS*@
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="userFacebook">
+                                <img class="form-img" src="img/ico/facebook_icon.png">
+                                Facebook
+                            </label>
+                            <InputText type="text" class="form-control" id="userFacebook" placeholder="https://www.facebook.com" @bind-Value="_restorerProfile.FacebookLink" />
+                            <ValidationMessage For="@(() => _restorerProfile.FacebookLink)" />
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="userTwitter">
+                                <img class="form-img" src="img/ico/twitter_icon.png">
+                                Twitter
+                            </label>
+                            <InputText type="tel" class="form-control" id="userTwitter" placeholder="https://twitter.com" @bind-Value="_restorerProfile.TwitterLink" />
+                            <ValidationMessage For="@(() => _restorerProfile.TwitterLink)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-6">
+                            <label for="userInstagram">
+                                <img class="form-img" src="img/ico/instagram_icon.png">
+                                Instagram
+                            </label>
+                            <InputText type="text" class="form-control" id="userInstagram" placeholder="https://www.instagram.com" @bind-Value="_restorerProfile.InstagramLink" />
+                            <ValidationMessage For="@(() => _restorerProfile.InstagramLink)" />
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="userLinkedIn">
+                                <img class="form-img" src="img/ico/linkedin_icon.png">
+                                LinkedIn
+                            </label>
+                            <InputText type="text" class="form-control" id="userLinkedIn" placeholder="https://www.linkedin.com" @bind-Value="_restorerProfile.LinkedInLink" />
+                            <ValidationMessage For="@(() => _restorerProfile.LinkedInLink)" />
+                        </div>
+                    </div>
+                    @*LINKS*@
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="restaurantDescription">
+                                <span class="oi oi-align-left form-icon"></span>
+                                Description du restaurant
+                            </label>
+                            <InputTextArea class="form-control" id="restaurantDescription" @bind-Value="_restorerProfile.Description" />
                         </div>
                     </div>
                     <div class="form-row top-divider">
@@ -224,7 +271,11 @@
         _restorerProfile.LastName = _restorer.LastName;
         _restorerProfile.EmailAddress = _restorer.EmailAddress;
         _restorerProfile.PhoneNumber = _restorer.PhoneNumber;
-
+        _restorerProfile.FacebookLink = _restorer.FacebookLink;
+        _restorerProfile.TwitterLink = _restorer.TwitterLink;
+        _restorerProfile.InstagramLink = _restorer.InstagramLink;
+        _restorerProfile.LinkedInLink = _restorer.LinkedInLink;
+        _restorerProfile.Description = _restorer.Description;
     }
 
     void CopyRestorerProfileData()
@@ -235,5 +286,10 @@
         _restorer.LastName = _restorerProfile.LastName;
         _restorer.EmailAddress = _restorerProfile.EmailAddress;
         _restorer.PhoneNumber = _restorerProfile.PhoneNumber;
+        _restorer.FacebookLink = _restorerProfile.FacebookLink;
+        _restorer.TwitterLink = _restorerProfile.TwitterLink;
+        _restorer.InstagramLink = _restorerProfile.InstagramLink;
+        _restorer.LinkedInLink = _restorerProfile.LinkedInLink;
+        _restorer.Description = _restorerProfile.Description;
     }
 }

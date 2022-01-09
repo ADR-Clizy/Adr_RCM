@@ -1,0 +1,173 @@
+﻿.bottom-screen-single-icon {
+    position: fixed;
+    left: 58%;
+    bottom: 70%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+/*----------------------------------------*/
+
+.bottom-screen-two-icons-right {
+    position: fixed;
+    left: 78%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-two-icons-left {
+    position: fixed;
+    left: 38%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+/*----------------------------------------*/
+
+.bottom-screen-three-icons-right {
+    position: fixed;
+    left: 83%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-three-icons-middle {
+    position: fixed;
+    left: 58%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-three-icons-left {
+    position: fixed;
+    left: 33%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+/*----------------------------------------*/
+
+.bottom-screen-four-icons-first-right {
+    position: fixed;
+    left: 21%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-four-icons-second-right {
+    position: fixed;
+    left: 46%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-four-icons-first-left {
+    position: fixed;
+    left: 71%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+.bottom-screen-four-icons-second-left {
+    position: fixed;
+    left: 95%;
+    bottom: 1%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+@media (max-width: 1048px) {
+    .bottom-screen-single-icon {
+        position: fixed;
+        left: 50%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    /*----------------------------------------*/
+
+    .bottom-screen-two-icons-right {
+        position: fixed;
+        left: 70%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-two-icons-left {
+        position: fixed;
+        left: 30%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    /*----------------------------------------*/
+
+    .bottom-screen-three-icons-right {
+        position: fixed;
+        left: 75%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-three-icons-middle {
+        position: fixed;
+        left: 50%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-three-icons-left {
+        position: fixed;
+        left: 25%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    /*----------------------------------------*/
+
+    .bottom-screen-four-icons-first-right {
+        position: fixed;
+        left: 13%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-four-icons-second-right {
+        position: fixed;
+        left: 38%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-four-icons-first-left {
+        position: fixed;
+        left: 63%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+
+    .bottom-screen-four-icons-second-left {
+        position: fixed;
+        left: 87%;
+        bottom: 1%;
+        transform: translate(-50%, -50%);
+        margin: 0 auto;
+    }
+}

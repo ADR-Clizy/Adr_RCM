@@ -122,6 +122,11 @@ strong {
     text-align: center;
 }
 
+.xx-small {
+    width: 3rem;
+    vertical-align: text-top;
+}
+
 .x-small {
     width:5rem;
     vertical-align: text-top;

@@ -16,24 +16,51 @@
 
 @if (_restorer != null)
 {
-    <div class="top-row centered-title">
-        <h1 class="bottom-divider">@_restorer.RestaurantName</h1>
-        @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
-        {
-            <h3 style="margin-top:10%">Aucune carte disponible</h3>
-            <img src="img/ico/sad_boy.png" width="150" />
-        }
-        @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
-        {
-            <div class="row" style="margin-bottom:15px">
-                <div class="col-2"></div>
-                <div class="col-8">
-                    <a class="btn btn-dark" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
-                </div>
-                <div class="col-2"></div>
+<div class="top-row centered-title">
+    <h1 class="bottom-divider">@_restorer.RestaurantName</h1>
+    <p class="bottom-divider">@_restorer.Description</p>
+    @if (!RestorerRepository.GetCards(_restorer.RestorerId).Any())
+    {
+        <h3 style="margin-top:10%">Aucune carte disponible</h3>
+        <img src="img/ico/sad_boy.png" width="150" />
+    }
+    @foreach (Card aCard in RestorerRepository.GetCards(_restorer.RestorerId))
+    {
+        <div class="row" style="margin-bottom:15px">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <a class="btn btn-dark btn-lg" href=@(Configuration.GetValue<string>("CardsFileURL") + $"{aCard.CardId}.pdf") target="_blank">@aCard.CardName</a>
             </div>
+            <div class="col-2"></div>
+        </div>
+    }
+    @if (fillLinks())
+    {
+        switch (_restorerLinks.Count)
+        {
+            case 1:
+                <a class="bottom-screen-single-icon" href="@_restorerLinks.ElementAt(0).Value" target="_blank"><img src="@_restorerLinks.ElementAt(0).Key" class="xx-small" /></a>
+                break;
+            case 2:
+                <a class="bottom-screen-two-icons-right" href="@_restorerLinks.ElementAt(0).Value" target="_blank"><img src="@_restorerLinks.ElementAt(0).Key" class="xx-small" /></a>
+                <a class="bottom-screen-two-icons-left" href="@_restorerLinks.ElementAt(1).Value" target="_blank"><img src="@_restorerLinks.ElementAt(1).Key" class="xx-small" /></a>
+                break;
+            case 3:
+                <a class="bottom-screen-three-icons-right" href="@_restorerLinks.ElementAt(0).Value" target="_blank"><img src="@_restorerLinks.ElementAt(0).Key" class="xx-small" /></a>
+                <a class="bottom-screen-three-icons-middle" href="@_restorerLinks.ElementAt(1).Value" target="_blank"><img src="@_restorerLinks.ElementAt(1).Key" class="xx-small" /></a>
+                <a class="bottom-screen-three-icons-left" href="@_restorerLinks.ElementAt(2).Value" target="_blank"><img src="@_restorerLinks.ElementAt(2).Key" class="xx-small" /></a>
+                break;
+            case 4:
+                <a class="bottom-screen-four-icons-first-right" href="@_restorerLinks.ElementAt(0).Value" target="_blank"><img src="@_restorerLinks.ElementAt(0).Key" class="xx-small" /></a>
+                <a class="bottom-screen-four-icons-second-right" href="@_restorerLinks.ElementAt(1).Value" target="_blank"><img src="@_restorerLinks.ElementAt(1).Key" class="xx-small" /></a>
+                <a class="bottom-screen-four-icons-first-left" href="@_restorerLinks.ElementAt(2).Value" target="_blank"><img src="@_restorerLinks.ElementAt(2).Key" class="xx-small" /></a>
+                <a class="bottom-screen-four-icons-second-left" href="@_restorerLinks.ElementAt(3).Value" target="_blank"><img src="@_restorerLinks.ElementAt(3).Key" class="xx-small" /></a>
+                break;
         }
-    </div>
+    }
+</div>
+        
+
 }
 else
 {
@@ -56,8 +83,31 @@ else
 
     private Restorer _restorer;
 
+    private Dictionary<string, string> _restorerLinks;
+
     protected override void OnInitialized()
     {
         _restorer = RestorerRepository.GetRestorerWithId(RestorerId);
+    }
+
+    private bool fillLinks()
+    {
+        _restorerLinks = new Dictionary<string, string>();
+        _restorerLinks.Clear();
+        if (_restorer == null)
+            return false;
+
+        if (_restorer.FacebookLink.Length > 0)
+            _restorerLinks.Add("img/ico/facebook_official_logo.png", _restorer.FacebookLink);
+
+        if (_restorer.InstagramLink.Length > 0)
+            _restorerLinks.Add("img/ico/instagram_official_logo.png", _restorer.InstagramLink);
+
+        if (_restorer.TwitterLink.Length > 0)
+            _restorerLinks.Add("img/ico/twitter_official_logo.png", _restorer.TwitterLink);
+
+        if (_restorer.LinkedInLink.Length > 0)
+            _restorerLinks.Add("img/ico/linkedin_official_logo.png", _restorer.LinkedInLink);
+        return true;
     }
 }
