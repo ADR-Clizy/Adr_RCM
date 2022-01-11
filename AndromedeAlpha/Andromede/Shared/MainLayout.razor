@@ -8,7 +8,8 @@
 @inherits LayoutComponentBase
 
 <div class="page">
-    @if (PageType.ToString() != "Andromede.Pages.CardManagment.CustomerCardsViewer")
+    @if (PageType.ToString() != "Andromede.Pages.CardManagment.CustomerCardsViewer"
+         && PageType.ToString() != "Andromede.Pages.CardManagment.FullSizePdfViewer")
     {
         <div class="sidebar">
             <NavMenu />

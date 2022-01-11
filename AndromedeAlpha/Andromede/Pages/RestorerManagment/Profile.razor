@@ -242,7 +242,7 @@
     bool isRestaurantSiretNumberExisting()
     {
         Restorer aRestorer = RestorerRepository.GetRestorerWithRestaurantSiretNumber(_restorerProfile.RestaurantSiretNumber);
-        return aRestorer != null && aRestorer != _restorer;
+        return aRestorer != null && aRestorer != _restorer && aRestorer.RestaurantSiretNumber != "";
     }
 
     void AskForNewPasswordFromProfile()
