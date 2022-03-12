@@ -47,7 +47,6 @@ namespace Andromede
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //StripeConfiguration.ApiKey = "sk_test_51JyHuMKx17ccypEKmhGLqlac7Vm1s8BgcWvDwi29LT2FwtXj5gTF0StoJEIqufisF41UEUkHZNw8QlYl7u9DxfBV008glX35YS";
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
